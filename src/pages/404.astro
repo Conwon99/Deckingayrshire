@@ -1,0 +1,38 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { Footer } from "@/sections/Footer";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+---
+
+<BaseLayout
+  title={`Page Not Found | ${brandName()}`}
+  description={`The page you are looking for could not be found. Return to ${brandName()} or contact us for a free quote across ${citiesLabel()} and ${business.region}.`}
+  canonical={absoluteUrl("/404")}
+  robots="noindex, follow"
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-screen pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main class="box-border caret-transparent max-w-[900px] mx-auto px-5 pt-[220px] pb-[120px] text-center">
+      <p class="text-[#ea580c] font-semibold uppercase tracking-[0.18em] mb-4">404</p>
+      <h1 class="text-white text-[36px] font-bold leading-[44px] mb-5 md:text-[64px] md:leading-[74px]">
+        Page not found
+      </h1>
+      <p class="text-gray-200 text-base leading-7 max-w-[640px] mx-auto mb-8 md:text-lg">
+        This page does not exist, but {brandName()} can still help with home services across {citiesLabel()} and {business.region}.
+      </p>
+      <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/" class="inline-flex items-center justify-center text-white bg-[#c2410c] px-6 py-3 rounded-[100px] font-semibold hover:bg-[#ea580c] transition-colors">
+          Return home
+        </a>
+        <a href="/services" class="inline-flex items-center justify-center text-white border border-white/30 px-6 py-3 rounded-[100px] font-semibold hover:border-[#ea580c] hover:text-[#ea580c] transition-colors">
+          View services
+        </a>
+        <a href="/contact" class="inline-flex items-center justify-center text-white border border-white/30 px-6 py-3 rounded-[100px] font-semibold hover:border-[#ea580c] hover:text-[#ea580c] transition-colors">
+          Get a free quote
+        </a>
+      </div>
+    </main>
+    <Footer client:load />
+  </div>
+</BaseLayout>

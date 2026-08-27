@@ -1,0 +1,550 @@
+================================================================================
+LOCAL SERVICE BUSINESS WEBSITE — SEO RULES GUIDE
+================================================================================
+Based on the Cutting Edge (Astro) template implementation.
+Use this as a checklist when building a new local trades / service website.
+Replace bracketed placeholders with business-specific values.
+
+Last updated: June 2026
+Reference site: https://www.cuttingedgeperth.co.uk
+
+
+================================================================================
+1. CORE PRINCIPLES
+================================================================================
+
+1.1  One primary goal: help Google and users understand WHAT you do, WHERE you
+     do it, and WHY to contact you.
+
+1.2  Build a page hierarchy, not a single long homepage. Every important search
+     intent gets its own indexable URL.
+
+1.3  Keep NAP (Name, Address, Phone) identical across website, Google Business
+     Profile, Facebook, and schema markup.
+
+1.4  Brand queries convert best early on. Non-brand local queries need dedicated
+     landing pages (town + service) to rank and earn clicks.
+
+1.5  Do not chase services the business does not offer just because competitors
+     get search impressions (e.g. sheds, decking if not offered).
+
+1.6  Mobile UX matters more for clicks than desktop — sticky phone/contact CTA
+     on all pages.
+
+1.7  When expanding SEO content, change TEXT only — do not redesign page layouts
+     that already convert.
+
+
+================================================================================
+2. REQUIRED PAGE ARCHITECTURE
+================================================================================
+
+Build these page types for every local service site:
+
+  PAGE TYPE                    URL PATTERN                         PRIORITY
+  ---------------------------------------------------------------------------
+  Homepage                     /                                   1.0
+  Services hub                 /services                           0.7
+  Locations hub                /locations                          0.75
+  Service category hubs        /[category-slug]                    0.8
+  Individual service pages     /services/[service-slug]            0.85
+  Location (town) pages        /locations/[town-slug]              0.8
+  Location × service matrix    /locations/[town]/[category-slug]   0.75
+  About (E-E-A-T)              /about                              0.5
+  Contact                      /contact                            0.5
+  Reviews                      /reviews                            0.75
+  Project / case study pages   /projects/[project-slug]            0.6
+  404                          /404                                (noindex optional)
+
+MINIMUM MATRIX RULE:
+  Create a location × service category page for EVERY town × EVERY category.
+  Example: 15 towns × 4 categories = 60 pages.
+  This targets queries like "fencing Perth", "fence repairs Dundee", etc.
+
+OPTIONAL BUT RECOMMENDED:
+  - 4–6 project/case study pages from real job photos
+  - Dedicated reviews page with schema
+
+
+================================================================================
+3. URL RULES
+================================================================================
+
+3.1  Use lowercase, hyphenated slugs only.
+     Good: /locations/perth/fencing-perth-dundee
+     Bad:  /Locations/Perth/Fencing.html
+
+3.2  No duplicate URLs for the same content (avoid .html and non-.html versions
+     of the same page).
+
+3.3  Category hub slugs should include primary geo keywords where natural:
+     /fencing-[primary-city]-[secondary-city]
+     /landscaping-[primary-city]-[secondary-city]
+
+3.4  Service slugs describe the service, not the town:
+     /services/fence-repairs-disposal
+     Town targeting belongs on location and matrix pages.
+
+3.5  Canonical URL on every page — absolute HTTPS, no trailing slash inconsistency.
+
+3.6  All internal links use root-relative paths (/services/...) not hardcoded
+     domains (except schema and sitemap).
+
+
+================================================================================
+4. TITLE TAG & META DESCRIPTION RULES
+================================================================================
+
+4.1  HOMEPAGE TITLE FORMAT:
+     [Brand Name] | [Primary Service] in [City A] & [City B]
+     Example: Cutting Edge | Fencing, Tree Care & Landscaping in Perth & Dundee
+
+4.2  SERVICE PAGE TITLE FORMAT:
+     [Service Name] in [City A] & [City B] | [Brand Name]
+     Example: Fencing Installation & Replacement in Perth & Dundee | Cutting Edge
+
+4.3  LOCATION PAGE TITLE FORMAT:
+     Fencing & Garden Services in [Town] | [Brand Name]
+     (Adjust "Fencing & Garden Services" to match the business's core offer.)
+
+4.4  LOCATION × SERVICE MATRIX TITLE FORMAT:
+     [Category] in [Town] | [Brand Name]
+     Example: Fencing in Perth | Cutting Edge
+
+4.5  CATEGORY HUB TITLE FORMAT:
+     [Category] in [City A] & [City B] | [Brand Name]
+     Example: Fencing in Perth & Dundee | Cutting Edge
+
+4.6  META DESCRIPTION RULES:
+     - 140–160 characters ideal
+     - Include primary service + primary cities + "free quote" or CTA phrase
+     - Unique per page — never copy-paste the same description site-wide
+     - Matrix pages: mention the specific town and service
+
+4.7  One <title> and one meta description per page. No keyword stuffing.
+
+
+================================================================================
+5. HEADING (H1 / H2 / H3) RULES
+================================================================================
+
+5.1  Exactly ONE H1 per page.
+
+5.2  H1 patterns:
+     Homepage:     [Primary Service] in [City A] & [City B]
+     Service page: [Service Name] in [City A] and [City B]
+                   (highlight city names in brand accent colour if designed)
+     Location page:[Services] in [Town]
+     Matrix page:  [Category] in [Town]
+     Category hub: [Category] in [City A] & [City B]
+
+5.3  SERVICE PAGE H2 SECTION ORDER (keep this order for SEO depth):
+     1. About [service]
+     2. Signs you need [service]
+     3. Our [service] options
+     4. [Service] for [City A] & [City B] homes  (local context)
+     5. What to expect
+     6. Why choose us for [service]
+     7. [Service] FAQs
+
+5.4  Do NOT collapse service content into a single block when adding sections.
+     Keep the original page layout; add new sections as separate H2 blocks inside
+     the existing content card.
+
+5.5  FAQ questions should be written as real user queries:
+     "Do you offer fence repair near me in Perth or Dundee?"
+     "Do you do patio installation in [Town]?"
+
+
+================================================================================
+6. CONTENT RULES BY PAGE TYPE
+================================================================================
+
+6.1  HOMEPAGE
+     - Hero H1 with primary geo
+     - Service cards linking to /services/[slug] (not /contact)
+     - One service areas section (map + linked town list) — no duplicate location grids
+     - Reviews section with link to /reviews
+     - FAQ section with FAQPage schema (server-rendered JSON-LD)
+     - Projects/gallery linking to /projects/[slug] (not raw image files)
+     - 600+ words of supporting content across H2 blocks (services, areas, etc.)
+
+6.2  SERVICE PAGES (each service)
+     Required data fields per service:
+     - slug, title, shortTitle, description, about
+     - signsYouNeed, options, localContext, whatToExpect, whyChooseUs
+     - benefits[] (bullet list), process[] (numbered steps)
+     - faq[] (minimum 2, ideally 3–4)
+     - parentCategorySlug (links service to category hub)
+     - image + descriptive imageAlt
+
+     Content minimum: 600–800 words total across all sections.
+
+     Include "near me" phrasing naturally in localContext and FAQs:
+     "If you are searching for fencing companies near Perth and Dundee..."
+
+6.3  CATEGORY HUB PAGES
+     - Intro paragraph (what the category covers)
+     - Local paragraph (why it matters in this region)
+     - Grid of child service pages linking to /services/[slug]
+     - "By area" grid linking to ALL location × category matrix pages
+     - Link back to /services hub
+
+6.4  LOCATION (TOWN) PAGES
+     Required per town:
+     - name, slug, title, description, intro
+     - nearby[] (3–4 neighbouring towns for internal links)
+     - locationFaqs[] (minimum 4, including one "fencing contractor near [Town]?")
+
+     Must link to:
+     - All 4 (or N) location × category matrix pages for that town
+     - Nearby town location pages
+
+6.5  LOCATION × SERVICE MATRIX PAGES
+     Required per town × category combination:
+     - Unique title, metaDescription, intro (2–3 sentences)
+     - localParagraph (town-specific context + near-me language)
+     - bodyParagraph (400+ words total across sections)
+     - faqs[] (2–3 town + service specific questions)
+     - Links to: parent category hub, child service pages, town hub, nearby matrix pages
+
+     Target keyword patterns per category:
+     Fencing:     fencing [town], fencing contractor [town], fence repairs [town]
+     Tree care:   hedge removal [town], garden clearance [town]
+     Landscaping: landscaping [town], patio installation [town]
+     Roof:        roof cleaning [town], de-mossing [town]
+
+6.6  ABOUT PAGE (E-E-A-T)
+     - Business story, experience, service area
+     - Credentials, insurance, qualifications (if available)
+     - Placeholder or embed for Google Business Profile / reviews
+     - Team photo or owner photo if available
+     - Link to /contact and /reviews
+
+6.7  CONTACT PAGE
+     - ContactPage schema
+     - FAQ section with FAQPage schema
+     - "Areas we serve" with linked location pages
+     - Service dropdown on form matching categories/services
+     - Phone, email, NAP visible without JavaScript
+
+6.8  PROJECT / CASE STUDY PAGES
+     - Unique URL per project: /projects/[slug]
+     - Title: [Work Type] in [Town/Region] | [Brand Name]
+     - Real photo with descriptive alt text
+     - 100–200 word description of the job
+     - Link to relevant service page and /contact
+
+
+================================================================================
+7. INTERNAL LINKING RULES
+================================================================================
+
+7.1  NAVIGATION (desktop + mobile):
+     - Services → /services (hub), dropdown to category hubs and/or service pages
+     - Locations → /locations (hub), dropdown to top towns
+     - About, Reviews, Contact as top-level items
+
+7.2  FOOTER:
+     - Quick links: Home, Services, About, Reviews, Contact
+     - Expandable Services list → category hubs + individual services
+     - Expandable Locations list → /locations + all town pages
+     - Top town × service links for primary cities (e.g. Fencing in Perth, Fencing in Dundee)
+
+7.3  BREADCRUMBS (in schema on every inner page):
+     Home → Services → Category → Service   (service pages)
+     Home → Locations → Town → Category     (matrix pages)
+     Home → Locations → Town                (location pages)
+
+     Breadcrumb URLs must point to real hub pages (/services, /locations), not # anchors.
+
+7.4  CROSS-LINKING MINIMUMS:
+     - Every service page links to its parent category hub
+     - Every service page links to related services in same category
+     - Every location page links to all matrix pages for that town
+     - Every category hub links to all matrix pages for that category
+     - Every matrix page links to 3–4 nearby town matrix pages (same category)
+
+7.5  ANCHOR TEXT:
+     Use descriptive anchors: "Fencing in Perth", "fence repairs in Dundee"
+     Avoid: "click here", "learn more" as the only anchor (visual "Learn more →" on
+     cards is fine if the card title is descriptive).
+
+
+================================================================================
+8. SCHEMA MARKUP (JSON-LD) RULES
+================================================================================
+
+8.1  GLOBAL (every page via BaseLayout):
+     - LocalBusiness / HomeAndConstructionBusiness with:
+       name, alternateName, description, url, telephone, email
+       address, areaServed (all towns as Place objects)
+       serviceType[] (all services listed)
+       sameAs[] (Facebook, GBP URL if available)
+       hasMap, priceRange, openingHoursSpecification
+       aggregateRating (reviewCount MUST match visible review count on site)
+       logo, image[], contactPoint
+     - WebSite schema with publisher link to #business
+
+8.2  PER-PAGE SCHEMA (add in addition to global):
+     Homepage:     WebPage + FAQPage
+     Service page: WebPage + Service + FAQPage + BreadcrumbList
+     Category hub: WebPage + Service + BreadcrumbList
+     Location page:WebPage + Place + FAQPage + BreadcrumbList
+     Matrix page:  WebPage + Service + Place + FAQPage + BreadcrumbList
+     Contact page: WebPage + ContactPage + FAQPage
+     Project page: WebPage + BreadcrumbList
+
+8.3  SCHEMA RULES:
+     - Server-render FAQ schema (JSON-LD in page, not client-only JS)
+     - Use absolute URLs in all schema @id and url fields
+     - reviewCount in aggregateRating must equal TOTAL_REVIEW_COUNT in data file
+     - Business name in schema must match Google Business Profile exactly
+     - inLanguage: "en-GB" on all WebPage schemas
+
+8.4  FAQ SCHEMA:
+     - Shared FAQ data in a central data file (faqs.ts)
+     - buildFaqSchema() helper reused across pages
+     - Minimum 4 FAQs on homepage; 2–4 per service/location/matrix page
+
+
+================================================================================
+9. TECHNICAL SEO RULES
+================================================================================
+
+9.1  ROBOTS.TXT (static/robots.txt):
+     User-agent: *
+     Allow: /
+     Disallow: /api/
+     Sitemap: https://www.[domain]/sitemap.xml
+
+9.2  SITEMAP (dynamic sitemap.xml.ts generated from data files):
+     Include ALL indexable routes:
+     - Homepage, hubs, categories, services, locations, matrix pages, projects
+     Set priorities:
+       Homepage:        1.0, weekly
+       Service pages:   0.85, monthly
+       Category hubs:   0.8, monthly
+       Location pages:  0.8, monthly
+       Matrix pages:    0.75, monthly
+       Hubs (services/locations/reviews): 0.75, monthly
+       About/contact:   0.5, monthly
+       Projects:        0.6, monthly
+     Include lastmod and changefreq on every URL.
+
+9.3  CANONICAL TAGS:
+     Every page passes explicit canonical URL to layout.
+     Format: https://www.[domain]/path (consistent www vs non-www).
+
+9.4  OPEN GRAPH & TWITTER:
+     - og:title, og:description, og:url, og:image on every page
+     - og:image:width (1200) and og:image:height (630)
+     - og:image:alt with descriptive text
+     - og:locale: en_GB
+     - twitter:card: summary_large_image
+
+9.5  HREFLANG:
+     en-gb, en, and x-default all pointing to the same UK canonical URL.
+
+9.6  HTML LANG: <html lang="en">
+
+9.7  GEO META:
+     meta name="geo.region" content="GB-SCT" (or appropriate UK region)
+     meta name="geo.placename" content="[Primary City]"
+
+9.8  IMAGES:
+     - Descriptive alt text on every image (include service + location where relevant)
+     - loading="lazy" on below-fold images; eager on hero/LCP images
+     - width/height attributes where possible to prevent layout shift
+     - Hero/OG image minimum 1200px wide
+
+9.9  404 PAGE:
+     - Custom styled 404 with links to Home, Services, Contact
+     - Keep users and crawlers on-site
+
+9.10 MOBILE:
+     - viewport meta tag
+     - Sticky phone/contact bar on all pages (MobileStickyContact component)
+     - Tap-friendly CTAs (min 44px touch targets)
+
+
+================================================================================
+10. DATA ARCHITECTURE (ASTRO / STATIC SITE)
+================================================================================
+
+Organise content in data files, not hardcoded in components:
+
+  src/data/services.ts       — all service page content + slugs
+  src/data/categories.ts     — category hubs + serviceSlugs[] + helpers
+  src/data/locations.ts      — all towns + nearby[] + location FAQs
+  src/data/locationServices.ts — matrix page content (town × category)
+  src/data/projects.ts       — case study pages
+  src/data/reviews.ts        — review text + TOTAL_REVIEW_COUNT constant
+  src/data/faqs.ts           — shared FAQ items + buildFaqSchema()
+
+RULE: Single source of truth. Service cards, nav, sitemap, and pages all read
+from the same data files. Adding a service in services.ts should automatically
+create its page via getStaticPaths().
+
+HELPER FUNCTIONS TO INCLUDE:
+  getCategoryBySlug()
+  getCategoryForService()
+  getServicesForCategory()
+  getRelatedServices()
+  getLocationBySlug()
+  getNearbyLocationLinks()
+  getLocationServicePage()
+  getLocationServicePagesForLocation()
+  getLocationServicePagesForCategory()
+  getFormServiceOptions()  — for contact form dropdown
+
+
+================================================================================
+11. KEYWORD & COPY RULES
+================================================================================
+
+11.1 PRIMARY KEYWORD PLACEMENT (each page):
+     - Title tag
+     - H1
+     - First paragraph
+     - One H2
+     - Meta description
+     - Image alt (where relevant)
+     - One FAQ question
+
+11.2 LOCAL KEYWORDS TO TARGET:
+     [service] [town]
+     [service] contractor [town]
+     [service] near me  (in body copy and FAQs, not title tags)
+     [service] [region/county]
+
+11.3 NEAR-ME LANGUAGE (use in localContext, matrix pages, location FAQs):
+     "If you are searching for a [service] contractor near [Town]..."
+     "Do you offer [service] near me in [City A] or [City B]?"
+
+11.4 BRAND + GEO on homepage:
+     Always include business name and primary cities in homepage title.
+
+11.5 DO NOT:
+     - Keyword stuff (repeat "fencing Perth" 20 times)
+     - Create pages for services not offered
+     - Copy competitor content word-for-word
+     - Use generic US spelling if targeting UK (use "neighbouring", "kerb", "mossing")
+
+
+================================================================================
+12. GOOGLE BUSINESS PROFILE ALIGNMENT
+================================================================================
+
+12.1  Website business name = GBP business name exactly.
+      Example: "Cutting Edge Fencing - Tree Care & Landscaping Specialists"
+
+12.2  alternateName in schema = short brand name ("Cutting Edge")
+
+12.3  Phone number on site = GBP phone (single canonical tel: link sitewide)
+
+12.4  Service categories on GBP should have matching pages on the website.
+
+12.5  Embed or link to GBP from About and Reviews pages.
+
+12.6  Encourage reviews on GBP; display review count consistently (schema = visible count).
+
+12.7  Add real business hours to schema openingHoursSpecification (keep accurate).
+
+
+================================================================================
+13. WHAT NOT TO DO (LESSONS FROM SEARCH CONSOLE DATA)
+================================================================================
+
+13.1  Do not rely on homepage alone for non-brand rankings — build town + service pages.
+
+13.2  Do not create thin location pages with only a paragraph and a map.
+
+13.3  Do not duplicate location sections on the same page (one service areas block only).
+
+13.4  Do not redesign service page layouts when adding SEO copy — text changes only.
+
+13.5  Do not chase high-impression keywords outside your service area or offering.
+
+13.6  Do not leave breadcrumb schema pointing to "#" or missing hub pages.
+
+13.7  Do not have mismatched review counts (schema says 21, page shows 6).
+
+13.8  Do not generate duplicate URLs (.html and non-.html for same page).
+
+13.9  Do not omit matrix pages — they are the highest-impact local SEO addition.
+
+13.10 Do not link service cards to /contact — link to the service detail page.
+
+
+================================================================================
+14. POST-LAUNCH CHECKLIST (GOOGLE SEARCH CONSOLE)
+================================================================================
+
+After launch:
+
+[ ] Submit sitemap in Google Search Console
+[ ] Request indexing for homepage, top 4 service pages, top 4 matrix pages
+[ ] Verify Coverage report shows pages indexed (allow 2–4 weeks)
+[ ] Monitor Queries for:
+      - Brand name queries (should rank first)
+      - [service] [primary city] (e.g. fencing Perth)
+      - [service] [secondary city]
+      - fence repairs [town] / near me variants
+[ ] Check which matrix pages earn impressions first — expand copy on those
+[ ] Compare mobile vs desktop CTR — prioritise mobile CTA if mobile CTR is higher
+[ ] Rewrite titles/meta for pages with impressions but 0% CTR
+[ ] Confirm no duplicate canonical issues in Page Indexing report
+[ ] Re-submit sitemap after adding new towns or services
+
+
+================================================================================
+15. NEW SITE SETUP — QUICK START CHECKLIST
+================================================================================
+
+When building a new site from this template:
+
+[ ] Replace [Brand], [Domain], phone, email in BaseLayout.astro
+[ ] Update services.ts with all services and full content fields
+[ ] Update categories.ts with 3–5 category hubs and serviceSlugs
+[ ] Update locations.ts with all service towns (10–20 recommended)
+[ ] Generate locationServices.ts matrix (towns × categories)
+[ ] Set TOTAL_REVIEW_COUNT in reviews.ts to match visible reviews
+[ ] Update sitemap.xml.ts siteUrl
+[ ] Update static/robots.txt sitemap URL
+[ ] Set homepage title per Section 4.1
+[ ] Wire nav: Services hub, Locations hub, About, Reviews, Contact
+[ ] Wire footer: categories, services, locations, top matrix links
+[ ] Add 4–6 project pages from real job photos
+[ ] Verify build outputs all expected pages (target: 90–100+ for 15 towns)
+[ ] Run npm run build — zero errors
+[ ] Deploy and submit sitemap to GSC
+
+
+================================================================================
+16. PAGE COUNT REFERENCE (CUTTING EDGE EXAMPLE)
+================================================================================
+
+  Homepage                         1
+  Services hub + 6 service pages   7
+  4 category hubs                  4
+  Locations hub + 15 town pages   16
+  15 × 4 matrix pages             60
+  About, Contact, Reviews          3
+  6 project pages                  6
+  404                              1
+  -----------------------------------
+  TOTAL                          ~98 pages
+
+
+================================================================================
+END OF GUIDE
+================================================================================
+
+To use with an AI assistant or developer, say:
+
+  "Build this website following SEO-RULES-GUIDE.txt. Business: [name].
+   Services: [list]. Towns: [list]. Domain: [url]. Phone: [number]."
+
+Ensure all placeholders are filled before launch. No page goes live with
+lorem ipsum, placeholder phone numbers, or mismatched review counts.

@@ -1,0 +1,118 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { categories, getServicesForCategory, type ServiceCategory } from "@/data/categories";
+import { locations } from "@/data/locations";
+import { getLocationServicePath } from "@/data/locationServices";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+
+export function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { categorySlug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props as { category: ServiceCategory };
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const canonical = absoluteUrl(`/${category.slug}`);
+const categoryServices = getServicesForCategory(category);
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${canonical}#service`,
+  name: category.title,
+  description: category.description,
+  url: canonical,
+  provider: { "@id": `${siteRoot}#business` },
+  areaServed: [
+    { "@type": "City", name: business.primaryCity },
+    { "@type": "AdministrativeArea", name: business.region },
+  ],
+};
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `${category.title} | ${brand}`,
+  description: category.description,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  about: { "@id": `${canonical}#service` },
+  inLanguage: "en-GB",
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Services", item: absoluteUrl("/services") },
+    { "@type": "ListItem", position: 3, name: category.name, item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${category.title} | ${brand}`}
+  description={category.description}
+  canonical={canonical}
+  ogImage={absoluteUrl(category.image)}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[74px] md:pt-[120px]">
+        <div class="relative bg-gray-900 bg-cover bg-center box-border caret-transparent mx-[15px] pt-[96px] pb-[120px] rounded-[20px] md:pt-[170px] md:pb-[200px] overflow-hidden" style={`background-image:url('${category.image}')`}>
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-900/55 via-gray-900/65 to-gray-900/90"></div>
+          <div class="relative z-10 box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px] text-center">
+            <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">{category.name}</p>
+            <h1 class="text-white text-[38px] font-bold box-border caret-transparent leading-[49.4px] mb-5 md:text-[68px] md:leading-[88.4px]">
+              {category.title}
+            </h1>
+            <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto">{category.intro}</p>
+            <div class="box-border caret-transparent flex flex-wrap items-center justify-center gap-4 mt-8">
+              <a href="/contact" class="text-white text-base bg-[#c2410c] box-border caret-transparent font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] hover:bg-[#ea580c] transition-colors">Get a Free Quote</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pt-[70px] md:pt-[100px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-[15px] md:px-[30px]">
+          <div class="bg-white rounded-[20px] p-6 md:p-10 mb-10">
+            <p class="text-gray-700 leading-7 mb-6">{category.localParagraph}</p>
+            <p class="text-gray-700 leading-7">Browse our <a href="/services" class="text-[#ea580c] hover:underline font-medium">full services list</a> or contact {brand} for a free quote across {citiesLabel()} and surrounding areas.</p>
+          </div>
+
+          <h2 class="text-white text-2xl font-bold mb-6 md:text-4xl">{category.name} Services</h2>
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2 mb-10">
+            {categoryServices.map((service) => (
+              <a href={`/services/${service.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-6 hover:border-[#ea580c] transition-colors block">
+                <h3 class="text-white text-lg font-bold mb-2">{service.title}</h3>
+                <p class="text-slate-300 text-sm mb-4">{service.cardDescription}</p>
+                <span class="text-[#ea580c] text-sm font-semibold">Learn more →</span>
+              </a>
+            ))}
+          </div>
+
+          <h2 class="text-white text-2xl font-bold mb-6 md:text-4xl">{category.name} by Area</h2>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 mb-10">
+            {locations.map((location) => (
+              <a href={getLocationServicePath(location.slug, category.slug)} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

@@ -1,0 +1,138 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { reviews, TOTAL_REVIEW_COUNT } from "@/data/reviews";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+import { categories } from "@/data/categories";
+
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const serviceList = categories.map((c) => c.name.toLowerCase()).join(", ");
+const canonical = absoluteUrl("/reviews");
+const hasReviews = TOTAL_REVIEW_COUNT > 0;
+const reviewSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${canonical}#webpage`,
+  "url": canonical,
+  "name": `Customer Reviews | ${brand}`,
+  "description": `Read customer reviews for ${brand} ${serviceList} work across ${cities} and ${business.region}.`,
+  "isPartOf": { "@id": `${siteRoot}#website` },
+  "about": { "@id": `${siteRoot}#business` },
+  ...(hasReviews ? {
+    "mainEntity": reviews.map((review) => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": review.name,
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5",
+      },
+      "reviewBody": review.text,
+      "itemReviewed": {
+        "@id": `${siteRoot}#business`,
+      },
+    })),
+  } : {}),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteRoot,
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Reviews",
+      "item": canonical,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`Customer Reviews | ${brand} ${cities}`}
+  description={`Read customer reviews for ${brand} ${serviceList} work across ${cities} and ${business.region}.`}
+  canonical={canonical}
+  robots={hasReviews ? undefined : "noindex, follow"}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[160px] pb-[70px] md:pt-[220px] md:pb-[120px]">
+        <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8 text-center">
+          <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">Reviews</p>
+          <h1 class="text-white text-[38px] font-bold box-border caret-transparent leading-[49.4px] mb-5 md:text-[68px] md:leading-[88.4px]">
+            Customer Reviews
+          </h1>
+          {hasReviews ? (
+            <>
+              <p class="text-slate-200 box-border caret-transparent max-w-[760px] mx-auto">
+                Customers recommend {brand} for reliable {serviceList} across {cities} and {business.region}.
+              </p>
+              <div class="box-border caret-transparent flex items-center justify-center gap-x-1 mt-6" aria-label="5 star customer rating">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <svg class="box-border caret-transparent h-5 w-5 text-[#ea580c] md:h-6 md:w-6" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p class="text-white/80 text-sm mt-2 md:text-base">From {TOTAL_REVIEW_COUNT} reviews</p>
+            </>
+          ) : (
+            <p class="text-slate-200 box-border caret-transparent max-w-[760px] mx-auto">
+              {brand} is a newly launched {serviceList} contractor covering {cities} and {business.region}. We haven't collected customer reviews yet — check back soon, or <a href="/contact" class="text-[#ea580c] hover:underline font-medium">get in touch for a free quote</a> and be among our first customers.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {hasReviews && (
+        <section class="box-border caret-transparent pb-[80px] md:pb-[130px]">
+          <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8">
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {reviews.map((review) => (
+                <article class="rounded-xl bg-neutral-900/75 border border-white/10 p-6 flex flex-col">
+                  <div class="flex items-start gap-3 mb-4">
+                    <div class={`w-12 h-12 rounded-full ${review.initialBg} flex items-center justify-center text-white font-bold text-lg shrink-0`}>
+                      {review.initial}
+                    </div>
+                    <div class="min-w-0">
+                      <h2 class="font-bold text-white uppercase text-base">{review.name}</h2>
+                      <p class="text-neutral-300 text-sm">{review.meta}</p>
+                      <p class="text-neutral-400 text-sm">{review.time}</p>
+                    </div>
+                  </div>
+                  <p class="text-white text-[15px] leading-6 md:text-base flex-grow mb-5">{review.text}</p>
+                  <div class="flex gap-0.5" aria-label="5 star review">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(reviewSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

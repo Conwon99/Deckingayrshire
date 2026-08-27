@@ -1,0 +1,240 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { ServicesSection } from "@/sections/ServicesSection";
+import { RatingDisplay } from "@/sections/ExperienceSection/components/RatingDisplay";
+import { Footer } from "@/sections/Footer";
+import { services, type ServicePage } from "@/data/services";
+import { getCategoryBySlug, getRelatedServices } from "@/data/categories";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props as { service: ServicePage };
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const canonical = absoluteUrl(`/services/${service.slug}`);
+const absoluteImage = absoluteUrl(service.image);
+const parentCategory = service.parentCategorySlug ? getCategoryBySlug(service.parentCategorySlug) : null;
+const relatedServices = getRelatedServices(service.slug);
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `${service.shortTitle} in ${cities} | ${brand}`,
+  description: service.description,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  about: { "@id": `${canonical}#service` },
+  primaryImageOfPage: { "@type": "ImageObject", url: absoluteImage },
+  inLanguage: "en-GB",
+};
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${canonical}#service`,
+  name: service.title,
+  description: service.description,
+  url: canonical,
+  image: absoluteImage,
+  provider: { "@id": `${siteRoot}#business` },
+  areaServed: [
+    { "@type": "City", name: business.primaryCity },
+    { "@type": "AdministrativeArea", name: business.region },
+  ],
+  offers: {
+    "@type": "Offer",
+    url: absoluteUrl("/contact"),
+    priceCurrency: "GBP",
+    availability: "https://schema.org/InStock",
+    description: `Free quote for ${service.title.toLowerCase()} across ${cities} and ${business.region}.`,
+  },
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: service.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Services", item: absoluteUrl("/services") },
+    ...(parentCategory
+      ? [{ "@type": "ListItem", position: 3, name: parentCategory.name, item: absoluteUrl(`/${parentCategory.slug}`) }]
+      : []),
+    {
+      "@type": "ListItem",
+      position: parentCategory ? 4 : 3,
+      name: service.title,
+      item: canonical,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${service.shortTitle} in ${cities} | ${brand}`}
+  description={service.description}
+  canonical={canonical}
+  ogImage={absoluteImage}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[74px] md:pt-[120px]">
+        <div class="relative bg-gray-900 bg-cover bg-center box-border caret-transparent mx-[15px] pt-[96px] pb-[120px] rounded-[20px] md:pt-[170px] md:pb-[230px] overflow-hidden" style={`background-image:url('${service.image}')`}>
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-900/55 via-gray-900/65 to-gray-900/90"></div>
+          <div class="relative z-10 box-border caret-transparent max-w-[1540px] mx-auto px-[15px] md:px-[30px]">
+            <div class="box-border caret-transparent text-center w-full mb-[30px] mx-auto md:w-4/5 md:mb-[50px]">
+              <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">Service</p>
+              <h1 class="text-white text-[38px] font-bold box-border caret-transparent leading-[49.4px] mb-5 md:text-[68px] md:leading-[88.4px]">
+                {service.title} in <span class="text-[#ea580c]">{cities}</span>
+              </h1>
+              <p class="text-slate-200 box-border caret-transparent max-w-full mx-auto md:max-w-[70%]">{service.description}</p>
+              <div class="box-border caret-transparent flex items-center justify-center mt-8">
+                <a href="/contact" class="text-white text-base bg-[#c2410c] box-border caret-transparent leading-[22px] text-center font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[36px] md:py-5 hover:bg-[#ea580c] hover:border-[#ea580c] transition-colors inline-flex items-center justify-center gap-3">
+                  Get a Free Quote
+                  <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                </a>
+              </div>
+              <div class="flex justify-center mt-4 md:mt-8">
+                <RatingDisplay client:load />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pt-[70px] md:pt-[120px]">
+        <div class="box-border caret-transparent max-w-[1540px] mx-auto px-[15px] md:px-[30px]">
+          <div class="relative box-border caret-transparent gap-x-[30px] grid auto-cols-[1fr] grid-cols-[1fr] grid-rows-[auto] gap-y-[30px] mx-5 md:gap-x-[50px] md:grid-cols-[1fr_0.5fr] md:gap-y-[50px] md:mx-0">
+            <div class="box-border caret-transparent">
+              <div class="box-border caret-transparent overflow-hidden mb-5 rounded-[20px] md:mb-[50px]">
+                <img src={service.image} alt={service.imageAlt} class="box-border caret-transparent inline-block h-full max-w-full w-full object-cover max-h-[620px]" loading="eager" />
+              </div>
+              <div class="items-start bg-white box-border caret-transparent gap-x-5 flex flex-col justify-start gap-y-5 p-6 rounded-[20px] md:gap-x-[50px] md:gap-y-[50px] md:p-10">
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    About {service.shortTitle.toLowerCase()}
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.about}</p>
+                </div>
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    Signs you need {service.shortTitle.toLowerCase()}
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.signsYouNeed}</p>
+                </div>
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    Our {service.shortTitle.toLowerCase()} options
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.options}</p>
+                  {relatedServices.length > 0 && (
+                    <p class="box-border caret-transparent mb-2.5 text-gray-700">
+                      Related services:
+                      {relatedServices.map((related, index) => (
+                        <>
+                          {index > 0 && ", "}
+                          <a href={`/services/${related.slug}`} class="text-[#ea580c] hover:underline font-medium">{related.title}</a>
+                        </>
+                      ))}
+                      {parentCategory && (
+                        <> — or view all <a href={`/${parentCategory.slug}`} class="text-[#ea580c] hover:underline font-medium">{parentCategory.name} in {cities}</a></>
+                      )}
+                    </p>
+                  )}
+                </div>
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    {service.shortTitle} for {cities} homes
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.localContext}</p>
+                </div>
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    What to expect
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.whatToExpect}</p>
+                  <ol role="list" class="box-border caret-transparent list-decimal mt-[15px] mb-2.5 pl-5 md:mt-[30px]">
+                    {service.process.map((step) => (
+                      <li class="box-border caret-transparent mb-5 text-gray-700">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="box-border caret-transparent">
+                  <h2 class="text-gray-900 text-[22px] font-bold box-border caret-transparent leading-[30.8px] mb-2.5 md:text-[34px] md:leading-[40.8px] md:mb-[30px]">
+                    Why choose us for {service.shortTitle.toLowerCase()}
+                  </h2>
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">{service.whyChooseUs}</p>
+                  <ul role="list" class="box-border caret-transparent mt-[15px] mb-2.5 pl-5 md:mt-[30px]">
+                    {service.benefits.map((benefit) => (
+                      <li class="box-border caret-transparent mb-5 text-gray-700">{benefit}</li>
+                    ))}
+                  </ul>
+                </div>
+                {parentCategory && (
+                  <p class="box-border caret-transparent mb-2.5 text-gray-700">
+                    {brand} provides trusted <a href={`/${parentCategory.slug}`} class="text-[#ea580c] hover:underline font-medium">{parentCategory.name.toLowerCase()} across {cities}</a> and surrounding areas. <a href="/" class="text-[#ea580c] hover:underline font-medium">Return to the homepage</a> to explore all services.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <aside class="box-border caret-transparent">
+              <div class="static bg-[#ea580c] box-border caret-transparent p-5 rounded-[20px] top-[50px] md:sticky md:p-[50px]">
+                <h2 class="text-white text-3xl font-bold box-border caret-transparent leading-9 mb-2.5 md:text-[46px] md:leading-[55.2px]">
+                  Book a free quote
+                </h2>
+                <p class="text-white/90 box-border caret-transparent mt-4 mb-8">
+                  Tell us about your {service.shortTitle.toLowerCase()} work and we will arrange the next step.
+                </p>
+                <div class="box-border caret-transparent flex flex-col gap-4">
+                  <a href="/contact" class="text-[#c2410c] text-base bg-white box-border caret-transparent leading-[22px] text-center font-bold border border-white px-5 py-3 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[30px] md:py-4 hover:text-white hover:bg-gray-900 hover:border-gray-900 transition-colors">
+                    Request a quote
+                  </a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent py-[70px] md:py-[120px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-[15px] md:px-[30px]">
+          <div class="box-border caret-transparent text-center mb-[30px] md:mb-[50px]">
+            <h2 class="text-white text-4xl font-bold box-border caret-transparent leading-[43.2px] mb-2.5 md:text-[56px] md:leading-[67.2px]">{service.shortTitle} FAQs</h2>
+          </div>
+          <div class="items-start box-border caret-transparent gap-x-[30px] flex flex-col justify-start gap-y-[20px]">
+            {service.faq.map((item) => (
+              <article class="bg-white box-border caret-transparent rounded-[20px] p-6 w-full">
+                <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent leading-[26px] mb-3">{item.question}</h3>
+                <p class="text-gray-700 box-border caret-transparent">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <ServicesSection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

@@ -1,0 +1,175 @@
+---
+import '../styles/global.css';
+import { MobileStickyContact } from '@/components/MobileStickyContact';
+import {
+  business,
+  absoluteUrl,
+  defaultKeywords,
+  defaultOgImageAlt,
+  homepageDescription,
+  schemaImages,
+} from '@/data/business';
+import { locations } from '@/data/locations';
+import { reviews, TOTAL_REVIEW_COUNT } from '@/data/reviews';
+import { CANONICAL_PHONE_TEL, PHONE_DISPLAY_ENABLED } from '@/utils/phoneTracking';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  keywords?: string;
+  ogImage?: string;
+  robots?: string;
+}
+
+const { title, description, canonical, keywords, ogImage, robots } = Astro.props;
+const siteUrl = business.siteUrl;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
+const defaultOgImage = ogImage || absoluteUrl(business.assets.hero);
+const logoUrl = absoluteUrl(business.assets.logo);
+const pageDescription = description || homepageDescription();
+const sampleReview = reviews[0];
+const businessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["HomeAndConstructionBusiness", "LocalBusiness"],
+  "@id": `${siteUrl}/#business`,
+  "name": business.businessName,
+  "alternateName": business.alternateName,
+  "description": pageDescription,
+  "url": siteUrl,
+  ...(PHONE_DISPLAY_ENABLED ? { "telephone": CANONICAL_PHONE_TEL } : {}),
+  "email": business.email,
+  "address": {
+    "@type": "PostalAddress",
+    ...business.address,
+  },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": business.region },
+    ...locations.map((location) => ({
+      "@type": "Place",
+      "name": location.name,
+    })),
+  ],
+  "serviceType": business.serviceTypes,
+  ...(business.facebookUrl ? { "sameAs": [business.facebookUrl] } : {}),
+  ...(business.googleMapsUrl ? { "hasMap": business.googleMapsUrl } : {}),
+  "priceRange": "££",
+  "openingHoursSpecification": business.openingHours.map((hours) => ({
+    "@type": "OpeningHoursSpecification",
+    ...hours,
+  })),
+  ...(TOTAL_REVIEW_COUNT > 0 ? {
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "reviewCount": String(TOTAL_REVIEW_COUNT),
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+  } : {}),
+  ...(sampleReview ? {
+    "review": [{
+      "@type": "Review",
+      "author": { "@type": "Person", "name": sampleReview.name },
+      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+      "reviewBody": sampleReview.text
+    }]
+  } : {}),
+  "logo": {
+    "@type": "ImageObject",
+    "url": logoUrl
+  },
+  "image": schemaImages(),
+  ...(PHONE_DISPLAY_ENABLED ? {
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": CANONICAL_PHONE_TEL,
+      "contactType": "customer service",
+      "areaServed": business.geoRegion,
+      "availableLanguage": "English"
+    }
+  } : {}),
+};
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  "name": business.alternateName,
+  "url": siteUrl,
+  "publisher": { "@id": `${siteUrl}/#business` },
+  "inLanguage": "en-GB"
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="keywords" content={keywords || defaultKeywords()} />
+    <meta name="author" content={business.alternateName} />
+    <meta name="language" content="English" />
+    <meta name="geo.region" content={business.geoRegion} />
+    <meta name="geo.placename" content={business.primaryCity} />
+    <meta name="theme-color" content="#c2410c" />
+    <meta name="robots" content={robots || "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+    
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <link rel="alternate" hreflang="en-gb" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+    
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={defaultOgImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={defaultOgImageAlt()} />
+    <meta property="og:site_name" content={business.alternateName} />
+    <meta property="og:locale" content="en_GB" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={defaultOgImage} />
+    <meta name="twitter:image:alt" content={defaultOgImageAlt()} />
+    
+    <link rel="icon" type="image/png" href={business.assets.logo} />
+    <link rel="apple-touch-icon" href={business.assets.logo} />
+    <meta name="generator" content={Astro.generator} />
+    
+    {business.googleAnalyticsId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${business.googleAnalyticsId}`}></script>
+        <script is:inline define:vars={{ gaId: business.googleAnalyticsId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    {business.googleAdsId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${business.googleAdsId}`}></script>
+        <script is:inline define:vars={{ adsId: business.googleAdsId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', adsId);
+        </script>
+      </>
+    )}
+    <script type="application/ld+json" set:html={JSON.stringify(businessSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+  </head>
+  <body>
+    <slot />
+    <MobileStickyContact client:load />
+  </body>
+</html>

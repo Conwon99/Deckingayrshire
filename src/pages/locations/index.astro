@@ -1,0 +1,75 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { locations } from "@/data/locations";
+
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+import { categories } from "@/data/categories";
+
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const canonical = absoluteUrl("/locations");
+const serviceList = categories.map((c) => c.name.toLowerCase()).join(", ");
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `Service Areas | ${brand} ${cities}`,
+  description: `${brand} serves ${cities} and towns across ${business.region} with ${serviceList}.`,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  inLanguage: "en-GB",
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Locations", item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={`Service Areas ${cities} | ${brand}`}
+  description={`${brand} serves ${cities} and surrounding areas in ${business.region} with ${serviceList}.`}
+  canonical={canonical}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[160px] pb-[70px] md:pt-[220px] md:pb-[100px]">
+        <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8 text-center">
+          <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">Locations</p>
+          <h1 class="text-white text-[34px] font-bold box-border caret-transparent leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+            Proudly Serving <span class="text-[#ea580c]">Ayrshire</span> and Surrounding Areas
+          </h1>
+          <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto">
+            {brand} provides {serviceList} across {business.region}. Select your area below or <a href="/contact" class="text-[#ea580c] hover:underline font-semibold">get in touch</a> to confirm coverage.
+          </p>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pb-[80px] md:pb-[120px]">
+        <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {locations.map((location) => (
+              <a href={`/locations/${location.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-5 hover:border-[#ea580c] transition-colors block">
+                <h2 class="text-white text-lg font-bold mb-2">{location.name}</h2>
+                <p class="text-slate-300 text-sm">{location.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

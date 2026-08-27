@@ -1,0 +1,258 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { RatingDisplay } from "@/sections/ExperienceSection/components/RatingDisplay";
+import { ServiceCard } from "@/sections/ServicesSection/components/ServiceCard";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import {
+  locationServicePages,
+  getNearbyLocationServiceLinks,
+  getServicesForLocationServicePage,
+  type LocationServicePage,
+} from "@/data/locationServices";
+import { buildFaqSchema } from "@/data/faqs";
+import { absoluteUrl, brandName, business } from "@/data/business";
+
+export function getStaticPaths() {
+  return locationServicePages.map((page) => ({
+    params: { locationSlug: page.locationSlug, categorySlug: page.categorySlug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props as { page: LocationServicePage };
+const brand = brandName();
+const siteRoot = absoluteUrl("/");
+const canonical = absoluteUrl(`/locations/${page.locationSlug}/${page.categorySlug}`);
+const categoryServices = getServicesForLocationServicePage(page);
+const nearbyLinks = getNearbyLocationServiceLinks(page);
+const absoluteImage = absoluteUrl(page.category.image);
+
+const explainerService =
+  categoryServices.find((service) => service.image !== page.category.image) ?? categoryServices[0];
+const whyChooseUsService = categoryServices[0];
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: page.title,
+  description: page.metaDescription,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  about: { "@id": `${canonical}#service` },
+  primaryImageOfPage: { "@type": "ImageObject", url: absoluteImage },
+  inLanguage: "en-GB",
+};
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${canonical}#service`,
+  name: page.h1,
+  description: page.intro,
+  url: canonical,
+  image: absoluteImage,
+  provider: { "@id": `${siteRoot}#business` },
+  areaServed: { "@type": "City", name: page.location.name },
+  offers: {
+    "@type": "Offer",
+    url: absoluteUrl("/contact"),
+    priceCurrency: "GBP",
+    availability: "https://schema.org/InStock",
+    description: `Free quote for ${page.category.name.toLowerCase()} in ${page.location.name}.`,
+  },
+};
+const placeSchema = {
+  "@context": "https://schema.org",
+  "@type": "Place",
+  "@id": `${canonical}#place`,
+  name: page.location.name,
+  description: page.localParagraph,
+};
+const faqSchema = buildFaqSchema(page.faqs);
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Locations", item: absoluteUrl("/locations") },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: page.location.name,
+      item: absoluteUrl(`/locations/${page.locationSlug}`),
+    },
+    {
+      "@type": "ListItem",
+      position: 4,
+      name: page.category.name,
+      item: absoluteUrl(`/${page.categorySlug}`),
+    },
+    { "@type": "ListItem", position: 5, name: page.h1, item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.metaDescription}
+  canonical={canonical}
+  ogImage={absoluteImage}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[74px] md:pt-[120px]">
+        <div class="relative bg-gray-900 bg-cover bg-center box-border caret-transparent mx-[15px] pt-[80px] pb-[90px] rounded-[20px] md:pt-[150px] md:pb-[180px] overflow-hidden" style={`background-image:url('${page.category.image}')`}>
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/70 to-gray-900/90"></div>
+          <div class="relative z-10 box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px] text-center">
+            <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">{page.category.name}</p>
+            <h1 class="text-white text-[34px] font-bold box-border caret-transparent leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+              {page.category.name} in <span class="text-[#ea580c]">{page.location.name}</span>
+            </h1>
+            <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto">{page.intro}</p>
+            <div class="box-border caret-transparent flex items-center justify-center mt-8">
+              <a href="/contact" class="text-white text-base bg-[#c2410c] box-border caret-transparent leading-[22px] text-center font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[36px] md:py-5 hover:bg-[#ea580c] hover:border-[#ea580c] transition-colors inline-flex items-center justify-center gap-3">
+                Get a Free Quote
+                <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+            <div class="flex justify-center mt-4 md:mt-8">
+              <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 backdrop-blur-sm">
+                <svg class="h-4 w-4 md:h-5 md:w-5 text-[#ea580c] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L12 14.9l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85L12 1.5z" />
+                </svg>
+                <span class="text-white text-sm md:text-base font-semibold">15+ Years Experience</span>
+              </div>
+            </div>
+            <div class="flex justify-center mt-4 md:mt-8">
+              <RatingDisplay client:load />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent py-[70px] md:py-[100px]">
+        <div class="box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px]">
+          <div class="box-border caret-transparent gap-x-[30px] grid auto-cols-[1fr] grid-cols-[1fr] grid-rows-[auto] gap-y-[30px] md:gap-x-[70px] md:grid-cols-[1fr_1fr] md:gap-y-[70px] items-center">
+            <img
+              src={business.assets.about}
+              alt={`${brand} decking team at work`}
+              class="box-border caret-transparent w-full rounded-[20px] object-cover aspect-[4/3]"
+              loading="lazy"
+            />
+            <div class="box-border caret-transparent">
+              <h2 class="text-white text-3xl font-bold box-border caret-transparent leading-[38px] mb-2.5 sm:text-4xl sm:leading-[43.2px] md:text-[48px] md:leading-[57.6px]">
+                Why choose {brand} for {page.category.name.toLowerCase()} in {page.location.name}?
+              </h2>
+              <p class="text-gray-200 text-sm sm:text-base box-border caret-transparent mt-2.5 mb-5 md:mt-5 md:mb-5 leading-relaxed">
+                {whyChooseUsService.whyChooseUs}
+              </p>
+              <ul class="text-white text-sm sm:text-base md:text-lg box-border caret-transparent list-none pl-0 space-y-2 md:space-y-3 mb-8">
+                {whyChooseUsService.benefits.map((benefit) => (
+                  <li class="flex items-center gap-3">
+                    <div class="flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#ea580c] flex-shrink-0">
+                      <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <span class="text-white font-medium">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="/contact"
+                class="text-white text-sm bg-[#c2410c] box-border caret-transparent inline-block leading-[19.6px] text-center border border-[#c2410c] px-5 py-2 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[30px] md:py-3 hover:bg-[#ea580c] hover:decoration-transparent transition-colors duration-300"
+              >
+                Get a Free Quote
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pt-[70px] md:pt-[120px]">
+        <div class="box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px]">
+          <div class="bg-white box-border caret-transparent rounded-[20px] p-6 md:p-10">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr] md:gap-10 items-start">
+              <div class="box-border caret-transparent">
+                <h2 class="text-gray-900 text-[28px] font-bold box-border caret-transparent leading-[36px] mb-5 md:text-[44px] md:leading-[54px]">
+                  {page.category.name} Services in {page.location.name}
+                </h2>
+                <p class="text-gray-700 box-border caret-transparent mb-6 leading-7">{page.localParagraph}</p>
+                <p class="text-gray-700 box-border caret-transparent mb-8 leading-7">{page.bodyParagraph}</p>
+
+                <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Related services in {page.location.name}</h3>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-8">
+                  {categoryServices.map((service) => (
+                    <ServiceCard
+                      href={`/services/${service.slug}`}
+                      image={service.image}
+                      imageAlt={service.imageAlt}
+                      title={service.title}
+                      description={service.cardDescription}
+                    />
+                  ))}
+                </div>
+
+                <p class="text-gray-700 box-border caret-transparent mb-6 leading-7">
+                  View all <a href={`/${page.categorySlug}`} class="text-[#ea580c] hover:underline font-medium">{page.category.title}</a>,
+                  the <a href={`/locations/${page.locationSlug}`} class="text-[#ea580c] hover:underline font-medium">{page.location.name} service area page</a>,
+                  or <a href="/contact" class="text-[#ea580c] hover:underline font-medium">contact {brand}</a> for a free quote.
+                </p>
+
+                {nearbyLinks.length > 0 && (
+                  <>
+                    <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Nearby areas</h3>
+                    <ul class="grid grid-cols-1 gap-2 pl-0 list-none md:grid-cols-2 mb-4">
+                      {nearbyLinks.map((link) => (
+                        <li>
+                          <a href={link.href} class="text-[#ea580c] hover:underline">{page.category.name} in {link.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+              <div class="box-border caret-transparent md:sticky md:top-[130px]">
+                <img
+                  src={explainerService.image}
+                  alt={explainerService.imageAlt}
+                  class="box-border caret-transparent w-full rounded-[20px] object-cover aspect-[4/3]"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent py-[70px] md:py-[100px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-[15px] md:px-[30px]">
+          <div class="box-border caret-transparent text-center mb-[30px] md:mb-[50px]">
+            <h2 class="text-white text-4xl font-bold box-border caret-transparent leading-[43.2px] mb-2.5 md:text-[56px] md:leading-[67.2px]">
+              {page.category.name} in {page.location.name} — FAQs
+            </h2>
+          </div>
+          <div class="items-start box-border caret-transparent gap-x-[30px] flex flex-col justify-start gap-y-[20px]">
+            {page.faqs.map((item) => (
+              <article class="bg-white box-border caret-transparent rounded-[20px] p-6 w-full">
+                <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent leading-[26px] mb-3">{item.question}</h3>
+                <p class="text-gray-700 box-border caret-transparent">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(placeSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

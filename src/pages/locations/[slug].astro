@@ -1,0 +1,139 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { ExperienceSection } from "@/sections/ExperienceSection";
+import { ServicesSection } from "@/sections/ServicesSection";
+import { HomepageContentSection } from "@/sections/HomepageContentSection";
+import { ServiceAreasSection } from "@/sections/ServiceAreasSection";
+import { ProjectsSection } from "@/sections/ProjectsSection";
+import { ReviewsSection } from "@/sections/ReviewsSection";
+import { LocationFAQSection } from "@/sections/LocationFAQSection";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { locations, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
+import { categories } from "@/data/categories";
+import { getLocationServicePath } from "@/data/locationServices";
+import { buildFaqSchema } from "@/data/faqs";
+import { absoluteUrl, brandName, business } from "@/data/business";
+
+export function getStaticPaths() {
+  return locations.map((location) => ({
+    params: { slug: location.slug },
+    props: { location },
+  }));
+}
+
+const { location } = Astro.props as { location: LocationPage };
+const brand = brandName();
+const siteRoot = absoluteUrl("/");
+const nearbyLinks = getNearbyLocationLinks(location);
+const canonical = absoluteUrl(`/locations/${location.slug}`);
+const locationSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: location.title,
+  description: location.description,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  about: { "@id": `${canonical}#place` },
+  inLanguage: "en-GB",
+};
+const placeSchema = {
+  "@context": "https://schema.org",
+  "@type": "Place",
+  "@id": `${canonical}#place`,
+  name: location.name,
+  description: location.description,
+  containedInPlace: {
+    "@type": "AdministrativeArea",
+    name: business.region,
+  },
+};
+const faqSchema = buildFaqSchema(location.locationFaqs);
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Locations", item: absoluteUrl("/locations") },
+    { "@type": "ListItem", position: 3, name: location.name, item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={location.title}
+  description={location.description}
+  canonical={canonical}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[74px] md:pt-[120px]">
+        <div class="relative bg-gray-900 bg-cover bg-center box-border caret-transparent mx-[15px] pt-[80px] pb-[90px] rounded-[20px] md:pt-[150px] md:pb-[180px] overflow-hidden" style={`background-image:url('${business.assets.hero}')`}>
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/70 to-gray-900/90"></div>
+          <div class="relative z-10 box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px] text-center">
+            <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">Service Area</p>
+            <h1 class="text-white text-[34px] font-bold box-border caret-transparent leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+              Decking Installers in <span class="text-[#ea580c]">{location.name}</span>
+            </h1>
+            <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto">{location.intro}</p>
+            <div class="box-border caret-transparent flex items-center justify-center mt-8">
+              <a href="/contact" class="text-white text-base bg-[#c2410c] box-border caret-transparent leading-[22px] text-center font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[36px] md:py-5 hover:bg-[#ea580c] hover:border-[#ea580c] transition-colors inline-flex items-center justify-center gap-3">
+                Get a Free Quote
+                <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pt-[70px] md:pt-[120px]">
+        <div class="box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px]">
+          <div class="bg-white box-border caret-transparent rounded-[20px] p-6 md:p-10">
+            <h2 class="text-gray-900 text-[28px] font-bold box-border caret-transparent leading-[36px] mb-5 md:text-[44px] md:leading-[54px]">
+              Decking Services in {location.name}
+            </h2>
+            <p class="text-gray-700 box-border caret-transparent mb-6">
+              {location.description} Whether you need a new deck installed or an existing one repaired, {brand} can help with tidy workmanship and practical advice.
+            </p>
+
+            <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Services in {location.name}</h3>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 mb-8">
+              {categories.map((category) => (
+                <a href={getLocationServicePath(location.slug, category.slug)} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
+              ))}
+            </div>
+
+            <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Nearby areas we cover</h3>
+            <ul class="grid grid-cols-1 gap-2 pl-0 list-none md:grid-cols-2">
+              {nearbyLinks.map((nearby) => (
+                <li>
+                  <a href={`/locations/${nearby.slug}`} class="text-[#ea580c] hover:underline">{nearby.name}</a>
+                </li>
+              ))}
+              {nearbyLinks.length === 0 && location.nearby.map((area) => (
+                <li class="text-gray-700">{area}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <ExperienceSection client:load />
+      <ServicesSection client:load />
+      <HomepageContentSection client:load />
+      <ProjectsSection client:load />
+      <ServiceAreasSection client:load />
+      <ReviewsSection client:load />
+      <LocationFAQSection client:load location={location} />
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(locationSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(placeSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

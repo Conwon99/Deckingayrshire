@@ -1,0 +1,112 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { categories } from "@/data/categories";
+import { services } from "@/data/services";
+import { getServicesForCategory } from "@/data/categories";
+
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const canonical = absoluteUrl("/services");
+const serviceList = categories.map((c) => c.name.toLowerCase()).join(", ");
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `Decking Services in ${cities} | ${brand}`,
+  description: `Full list of decking services from ${brand} across ${cities} and ${business.region}.`,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  inLanguage: "en-GB",
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Services", item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={`Decking Services in ${cities} | ${brand}`}
+  description={`Full list of ${serviceList} in ${cities} and ${business.region}. Free quotes available.`}
+  canonical={canonical}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[160px] pb-[70px] md:pt-[220px] md:pb-[100px]">
+        <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8 text-center">
+          <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">All Services</p>
+          <h1 class="text-white text-[34px] font-bold box-border caret-transparent leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+            Decking Services in <span class="text-[#ea580c]">Ayrshire</span>
+          </h1>
+          <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto mb-8">
+            Find the service you need below, or get in touch with {brand} for a free quote. We handle {serviceList} across {business.region}.
+          </p>
+          <a
+            href="/contact"
+            class="text-white text-base bg-[#c2410c] box-border caret-transparent leading-[22px] text-center font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] border-solid md:text-lg hover:bg-[#ea580c] hover:border-[#ea580c] transition-colors inline-flex items-center justify-center gap-3"
+          >
+            Get a Free Quote
+          </a>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pb-[80px] md:pb-[120px]">
+        <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8 space-y-14">
+          {categories.map((category) => {
+            const categoryServices = getServicesForCategory(category);
+            return (
+              <div>
+                <h2 class="text-white text-2xl font-bold mb-2 md:text-4xl">
+                  <a href={`/${category.slug}`} class="hover:text-[#ea580c] transition-colors">{category.name}</a>
+                </h2>
+                <p class="text-slate-300 mb-6 max-w-[720px]">{category.description}</p>
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  {categoryServices.map((service) => (
+                    <a href={`/services/${service.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-6 hover:border-[#ea580c] transition-colors block">
+                      <h3 class="text-white text-lg font-bold mb-2">{service.title}</h3>
+                      <p class="text-slate-300 text-sm mb-4">{service.cardDescription}</p>
+                      <span class="text-[#ea580c] text-sm font-semibold">Learn more →</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          <div>
+            <h2 class="text-white text-2xl font-bold mb-2 md:text-4xl">General Enquiries</h2>
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {services.filter((s) => s.slug === "free-quotes").map((service) => (
+                <a href={`/services/${service.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-6 hover:border-[#ea580c] transition-colors block">
+                  <h3 class="text-white text-lg font-bold mb-2">{service.title}</h3>
+                  <p class="text-slate-300 text-sm mb-4">{service.cardDescription}</p>
+                  <span class="text-[#ea580c] text-sm font-semibold">Learn more →</span>
+                </a>
+              ))}
+              <a href="/contact" class="rounded-xl bg-neutral-900/75 border border-white/10 p-6 hover:border-[#ea580c] transition-colors block">
+                <h3 class="text-white text-lg font-bold mb-2">Contact Us</h3>
+                <p class="text-slate-300 text-sm mb-4">Not sure what you need? Call or message and we will help figure it out.</p>
+                <span class="text-[#ea580c] text-sm font-semibold">Get in touch →</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

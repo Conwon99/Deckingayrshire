@@ -1,0 +1,146 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { locations } from "@/data/locations";
+import { categories } from "@/data/categories";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+import { TOTAL_REVIEW_COUNT } from "@/data/reviews";
+
+const hasReviews = TOTAL_REVIEW_COUNT > 0;
+
+const brand = brandName();
+const cities = citiesLabel();
+const canonical = absoluteUrl("/about");
+const aboutSchema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `About ${brand} | ${cities} Decking Installers`,
+  description: `Meet ${brand} — composite and timber decking installers serving ${cities} and ${business.region}.`,
+  isPartOf: { "@id": `${absoluteUrl("/")}#website` },
+  about: { "@id": `${absoluteUrl("/")}#business` },
+  inLanguage: "en-GB",
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+    { "@type": "ListItem", position: 2, name: "About", item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={`About ${brand} | ${cities} Decking Installers`}
+  description={`Meet ${brand}, composite and timber decking installers serving ${cities} and surrounding areas. Free quotes available.`}
+  canonical={canonical}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[160px] pb-[70px] md:pt-[220px] md:pb-[100px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-5 md:px-8 text-center">
+          <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">About Us</p>
+          <h1 class="text-white text-[34px] font-bold leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+            About {brand} — Decking Installers in {cities}
+          </h1>
+          <p class="text-slate-200 max-w-[720px] mx-auto mb-8">Composite and timber decking, installed and repaired with tidy workmanship and free quotes.</p>
+          <a
+            href="/contact"
+            class="text-white text-base bg-[#c2410c] font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] hover:bg-[#ea580c] transition-colors inline-flex"
+          >
+            Get a Free Quote
+          </a>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pb-[60px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-5 md:px-8">
+          <div class="bg-white rounded-[20px] p-6 md:p-10 space-y-10">
+            <div>
+              <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">About {brand}</h2>
+              <p class="text-gray-700 leading-7">{brand} installs and repairs composite and timber decking for gardens and commercial spaces across {cities} and {business.region}. The focus is on solid, well-drained builds, tidy workmanship and straightforward advice on the right material for each garden.</p>
+            </div>
+
+            <div>
+              <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Our Approach</h2>
+              <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="w-32 h-32 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+                  <img src={business.assets.about} alt={`Completed decking project by ${brand}`} width="128" height="128" class="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div>
+                  <h3 class="text-gray-900 text-xl font-bold mb-1">Free Quotes, Clear Communication</h3>
+                  <p class="text-gray-600 text-sm mb-3">Every job across {cities} and {business.region}</p>
+                  <p class="text-gray-700 leading-7">Every project starts with a free, no-obligation quote covering materials, groundwork and timescale, so there are no surprises once work begins. Photos of the garden are usually enough to give an initial estimate, with a site visit arranged where needed.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Proudly Serving {cities} and Surrounding Areas</h2>
+              <p class="text-gray-700 leading-7 mb-4">{brand} covers decking installation and repairs across {business.region}. <a href="/locations" class="text-[#ea580c] hover:underline font-medium">View all service areas</a>.</p>
+              <div class="grid grid-cols-2 gap-2 md:grid-cols-3">
+                {locations.map((location) => (
+                  <a href={`/locations/${location.slug}`} class="text-[#ea580c] hover:underline text-sm">{location.name}</a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Insurance and Trade Credentials</h2>
+              <ul class="text-gray-700 space-y-2 list-disc pl-5">
+                <li>Free quotes on all decking work</li>
+                <li>Tidy workmanship and clear communication throughout</li>
+                <li>Honest advice on composite versus timber for your budget</li>
+                <li>Insurance and trade credential details — to be confirmed and added here</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Our Services</h2>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {categories.map((category) => (
+                  <a href={`/${category.slug}`} class="text-[#ea580c] hover:underline">{category.title}</a>
+                ))}
+              </div>
+            </div>
+
+            {business.googleMapsUrl && (
+              <div>
+                <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Find Us on Google</h2>
+                <a href={business.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-block text-[#ea580c] hover:underline">View on Google Maps</a>
+              </div>
+            )}
+
+            {business.facebookUrl && (
+              <div>
+                <h2 class="text-gray-900 text-2xl font-bold mb-4 md:text-3xl">Follow Us</h2>
+                <a href={business.facebookUrl} target="_blank" rel="noopener noreferrer" class="text-[#ea580c] hover:underline">{brand} on Facebook</a>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {hasReviews && (
+        <section class="box-border caret-transparent pb-[80px]">
+          <div class="box-border caret-transparent max-w-[980px] mx-auto px-5 md:px-8">
+            <h2 class="text-white text-2xl font-bold mb-4 text-center md:text-3xl">See What Our Customers Say</h2>
+            <div class="rounded-xl bg-neutral-900/75 border border-white/10 p-8 text-center text-slate-300 min-h-[200px] flex items-center justify-center">
+              <p><a href="/reviews" class="text-[#ea580c] hover:underline">View reviews on our website</a></p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

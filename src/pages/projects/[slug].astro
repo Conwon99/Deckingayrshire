@@ -1,0 +1,103 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Header } from "@/sections/Header";
+import { CTASection } from "@/sections/Footer/components/CTASection";
+import { Footer } from "@/sections/Footer";
+import { projects, type ProjectPage } from "@/data/projects";
+import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
+import { categories } from "@/data/categories";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props as { project: ProjectPage };
+const brand = brandName();
+const cities = citiesLabel();
+const siteRoot = absoluteUrl("/");
+const serviceList = categories.map((c) => c.name.toLowerCase()).join(", ");
+const canonical = absoluteUrl(`/projects/${project.slug}`);
+const absoluteImage = absoluteUrl(project.image);
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  name: `${project.title} | ${brand}`,
+  description: project.description,
+  isPartOf: { "@id": `${siteRoot}#website` },
+  primaryImageOfPage: { "@type": "ImageObject", url: absoluteImage },
+  inLanguage: "en-GB",
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteRoot },
+    { "@type": "ListItem", position: 2, name: "Projects", item: `${siteRoot}#projects` },
+    { "@type": "ListItem", position: 3, name: project.title, item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${project.title} | ${brand}`}
+  description={project.description}
+  canonical={canonical}
+  ogImage={absoluteImage}
+>
+  <div class="text-neutral-600 text-lg not-italic normal-nums font-medium accent-auto bg-[#323232] box-border caret-transparent block tracking-[normal] leading-[27px] list-outside list-disc min-h-full pointer-events-auto text-start indent-[0px] normal-case visible border-separate font-manrope">
+    <Header client:load />
+    <main>
+      <section class="box-border caret-transparent pt-[74px] md:pt-[120px]">
+        <div class="relative bg-gray-900 bg-cover bg-center box-border caret-transparent mx-[15px] pt-[80px] pb-[90px] rounded-[20px] md:pt-[150px] md:pb-[180px] overflow-hidden" style={`background-image:url('${project.image}')`}>
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/70 to-gray-900/90"></div>
+          <div class="relative z-10 box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px] text-center">
+            <p class="text-[#ea580c] text-sm font-semibold uppercase tracking-[0.18em] mb-4">Project</p>
+            <h1 class="text-white text-[34px] font-bold box-border caret-transparent leading-[44px] mb-5 md:text-[64px] md:leading-[78px]">
+              {project.title}
+            </h1>
+            <p class="text-slate-200 box-border caret-transparent max-w-[780px] mx-auto">{project.description}</p>
+            <div class="box-border caret-transparent flex items-center justify-center mt-8">
+              <a href="/contact" class="text-white text-base bg-[#c2410c] box-border caret-transparent leading-[22px] text-center font-bold border border-[#c2410c] px-8 py-4 rounded-[50px] border-solid md:text-lg md:leading-[25.2px] md:px-[36px] md:py-5 hover:bg-[#ea580c] hover:border-[#ea580c] transition-colors inline-flex items-center justify-center gap-3">
+                Get a Free Quote
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box-border caret-transparent pt-[70px] md:pt-[120px] pb-[70px]">
+        <div class="box-border caret-transparent max-w-[980px] mx-auto px-[15px] md:px-[30px]">
+          <div class="bg-white box-border caret-transparent rounded-[20px] p-6 md:p-10">
+            <div class="box-border caret-transparent overflow-hidden mb-8 rounded-[20px]">
+              <img src={project.image} alt={project.imageAlt} class="w-full object-cover max-h-[520px]" loading="eager" />
+            </div>
+            <p class="text-gray-500 text-sm font-semibold uppercase tracking-wide mb-2">{project.serviceType} · {project.location}</p>
+            <p class="text-gray-700 leading-7 mb-6">{project.intro}</p>
+            <p class="text-gray-700 leading-7 mb-6">{project.details}</p>
+            <h2 class="text-gray-900 text-xl font-bold mb-3">What this project included</h2>
+            <ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6">
+              {project.highlights.map((highlight) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+            <p class="text-gray-700 leading-7">
+              {brand} provides <a href="/services" class="text-[#ea580c] hover:underline font-medium">{serviceList}</a> across {cities} and {business.region}.
+              <a href="/contact" class="text-[#ea580c] hover:underline font-medium"> Contact us</a> for a free quote on similar work.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <CTASection client:load />
+    </main>
+    <Footer client:load />
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>

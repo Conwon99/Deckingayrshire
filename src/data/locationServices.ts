@@ -13,7 +13,10 @@ export type LocationServiceFaq = {
 
 export type LocationServicePage = {
   locationSlug: string;
+  /** Fixed category identifier — links to the county-wide category hub page. */
   categorySlug: string;
+  /** Per-town URL segment for this matrix page, e.g. "composite-decking-fairlie". */
+  matrixSlug: string;
   title: string;
   h1: string;
   metaDescription: string;
@@ -27,6 +30,9 @@ export type LocationServicePage = {
 
 const brand = brandName();
 
+export const getMatrixSlug = (category: ServiceCategory, locationSlug: string) =>
+  `${category.baseSlug}-${locationSlug}`;
+
 const buildLocationServicePage = (
   location: LocationPage,
   category: ServiceCategory,
@@ -38,6 +44,7 @@ const buildLocationServicePage = (
   return {
     locationSlug: location.slug,
     categorySlug: category.slug,
+    matrixSlug: getMatrixSlug(category, location.slug),
     title: `${category.matrixTitleSuffix} in ${displayName} | ${brand}`,
     h1: `${category.matrixTitleSuffix} in ${displayName}`,
     metaDescription: truncateMeta(category.metaTemplate(displayName)),
@@ -54,9 +61,9 @@ export const locationServicePages: LocationServicePage[] = locations.flatMap((lo
   categories.map((category) => buildLocationServicePage(location, category)),
 );
 
-export const getLocationServicePage = (locationSlug: string, categorySlug: string) =>
+export const getLocationServicePage = (locationSlug: string, matrixSlug: string) =>
   locationServicePages.find(
-    (page) => page.locationSlug === locationSlug && page.categorySlug === categorySlug,
+    (page) => page.locationSlug === locationSlug && page.matrixSlug === matrixSlug,
   );
 
 export const getLocationServicePagesForLocation = (locationSlug: string) =>
@@ -71,12 +78,12 @@ export const getNearbyLocationServiceLinks = (
   const nearby = getNearbyLocationLinks(page.location);
   return nearby.slice(0, 4).map((loc) => ({
     name: loc.name,
-    href: `/locations/${loc.slug}/${page.categorySlug}`,
+    href: `/locations/${loc.slug}/${getMatrixSlug(page.category, loc.slug)}`,
   }));
 };
 
-export const getLocationServicePath = (locationSlug: string, categorySlug: string) =>
-  `/locations/${locationSlug}/${categorySlug}`;
+export const getLocationServicePath = (locationSlug: string, matrixSlug: string) =>
+  `/locations/${locationSlug}/${matrixSlug}`;
 
 export const getServicesForLocationServicePage = (page: LocationServicePage) =>
   getServicesForCategory(page.category);

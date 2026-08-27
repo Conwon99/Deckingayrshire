@@ -71,7 +71,7 @@ const pages: SitemapPage[] = [
 
   ...locationServicePages.map((page) => ({
 
-    path: `/locations/${page.locationSlug}/${page.categorySlug}`,
+    path: `/locations/${page.locationSlug}/${page.matrixSlug}`,
 
     priority: '0.75',
 

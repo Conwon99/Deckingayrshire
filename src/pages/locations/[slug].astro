@@ -12,7 +12,7 @@ import { CTASection } from "@/sections/Footer/components/CTASection";
 import { Footer } from "@/sections/Footer";
 import { locations, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
 import { categories } from "@/data/categories";
-import { getLocationServicePath } from "@/data/locationServices";
+import { getLocationServicePath, getMatrixSlug } from "@/data/locationServices";
 import { buildFaqSchema } from "@/data/faqs";
 import { absoluteUrl, brandName, business } from "@/data/business";
 
@@ -102,7 +102,7 @@ const breadcrumbSchema = {
             <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Services in {location.name}</h3>
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 mb-8">
               {categories.map((category) => (
-                <a href={getLocationServicePath(location.slug, category.slug)} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
+                <a href={getLocationServicePath(location.slug, getMatrixSlug(category, location.slug))} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
               ))}
             </div>
 

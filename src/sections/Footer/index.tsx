@@ -4,11 +4,12 @@ import { categories } from "@/data/categories";
 import { locations } from "@/data/locations";
 import { services } from "@/data/services";
 import { TOTAL_REVIEW_COUNT } from "@/data/reviews";
+import { getMatrixSlug } from "@/data/locationServices";
 
 const topMatrixLinks = locations.slice(0, 2).flatMap((location) =>
   categories.slice(0, 2).map((category) => ({
     label: `${category.name} in ${location.shortName ?? location.name}`,
-    href: `/locations/${location.slug}/${category.slug}`,
+    href: `/locations/${location.slug}/${getMatrixSlug(category, location.slug)}`,
   })),
 );
 

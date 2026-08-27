@@ -8,6 +8,8 @@ export type LocationServiceFaq = {
 
 export type ServiceCategory = {
   slug: string;
+  /** Stable prefix used to build per-town matrix URLs, e.g. "composite-decking" + "-fairlie". */
+  baseSlug: string;
   name: string;
   title: string;
   description: string;
@@ -35,6 +37,7 @@ const { assets, region } = business;
 export const categories: ServiceCategory[] = [
   {
     slug: "composite-decking-ayrshire",
+    baseSlug: "composite-decking",
     name: "Composite Decking",
     title: `Composite Decking in ${cities}`,
     description: `Composite decking installation and balustrades across ${cities} and ${region}. Low-maintenance boards, tidy finishing and free quotes.`,
@@ -72,6 +75,7 @@ export const categories: ServiceCategory[] = [
   },
   {
     slug: "timber-decking-ayrshire",
+    baseSlug: "timber-decking",
     name: "Timber Decking",
     title: `Timber Decking in ${cities}`,
     description: `Timber decking installation across ${cities} and ${region}. Softwood and hardwood decks, raised decking and free quotes.`,
@@ -109,6 +113,7 @@ export const categories: ServiceCategory[] = [
   },
   {
     slug: "decking-repairs-ayrshire",
+    baseSlug: "decking-repairs",
     name: "Decking Repairs",
     title: `Decking Repairs in ${cities}`,
     description: `Decking repairs, resurfacing and restoration across ${cities} and ${region}. Rotten boards, loose balustrades and tired decks made safe again.`,

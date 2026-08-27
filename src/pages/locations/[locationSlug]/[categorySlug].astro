@@ -16,7 +16,7 @@ import { absoluteUrl, brandName, business } from "@/data/business";
 
 export function getStaticPaths() {
   return locationServicePages.map((page) => ({
-    params: { locationSlug: page.locationSlug, categorySlug: page.categorySlug },
+    params: { locationSlug: page.locationSlug, categorySlug: page.matrixSlug },
     props: { page },
   }));
 }
@@ -24,7 +24,7 @@ export function getStaticPaths() {
 const { page } = Astro.props as { page: LocationServicePage };
 const brand = brandName();
 const siteRoot = absoluteUrl("/");
-const canonical = absoluteUrl(`/locations/${page.locationSlug}/${page.categorySlug}`);
+const canonical = absoluteUrl(`/locations/${page.locationSlug}/${page.matrixSlug}`);
 const categoryServices = getServicesForLocationServicePage(page);
 const nearbyLinks = getNearbyLocationServiceLinks(page);
 const absoluteImage = absoluteUrl(page.category.image);

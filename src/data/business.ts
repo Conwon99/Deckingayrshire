@@ -77,9 +77,9 @@ export const business: BusinessConfig = {
   googleMapsUrl: "",
   whatsappUrl: null,
 
-  primaryCity: "Ayr",
-  secondaryCity: "Kilmarnock",
-  region: "Ayrshire",
+  primaryCity: "Ayrshire",
+  secondaryCity: "",
+  region: "South West Scotland",
   geoRegion: "GB-SCT",
 
   address: {

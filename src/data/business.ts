@@ -103,7 +103,7 @@ export const business: BusinessConfig = {
 
   assets: {
     hero: "/deckingayrshire-hero.webp",
-    logo: "/deckingayrshire-logo.webp",
+    logo: "/deckingayrshire-logo.png",
     about: "/deckingayrshire-about.webp",
     gallery: [
       "/deckingayrshire-gal-01.webp",

@@ -169,6 +169,10 @@ const websiteSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </head>
   <body>
+    <script>
+      import { captureLeadSource } from '@/utils/leadSource';
+      captureLeadSource();
+    </script>
     <slot />
     <MobileStickyContact client:load />
   </body>

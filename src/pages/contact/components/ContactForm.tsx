@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { trackFormStart } from "@/utils/analytics";
+import { getLeadSourceFields } from "@/utils/leadSource";
 import { getFormServiceOptions } from "@/data/categories";
 import { business } from "@/data/business";
 
@@ -40,6 +41,9 @@ export const ContactForm = () => {
 
         const formData = new FormData(form);
         formData.append("websiteUrl", business.siteUrl.replace(/^https?:\/\//, ""));
+        Object.entries(getLeadSourceFields()).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         try {
           const response = await fetch(FORMSPREE_ENDPOINT, {

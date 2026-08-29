@@ -3,7 +3,7 @@ import { trackFormStart } from "@/utils/analytics";
 import { getFormServiceOptions } from "@/data/categories";
 import { business } from "@/data/business";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/meaqjnnl";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mjyvkblj";
 
 export const ContactForm = () => {
   const serviceOptions = getFormServiceOptions();

@@ -1,5 +1,6 @@
 import { services, type ServicePage } from "@/data/services";
 import { business, brandName, citiesLabel } from "@/data/business";
+import { characterLocalNote, type Character } from "@/data/locationCharacter";
 
 export type LocationServiceFaq = {
   question: string;
@@ -25,7 +26,7 @@ export type ServiceCategory = {
   nearMePhrase: string;
   metaTemplate: (displayName: string) => string;
   introTemplate: (town: string) => string;
-  localTemplate: (town: string, nearby: string[]) => string;
+  localTemplate: (town: string, nearby: string[], character: Character) => string;
   bodyTemplate: (town: string) => string;
   faqTemplates: (town: string) => LocationServiceFaq[];
 };
@@ -54,8 +55,8 @@ export const categories: ServiceCategory[] = [
       `Composite decking installers in ${displayName} by ${brand}. Low-maintenance composite boards, balustrades and free quotes across ${region}.`,
     introTemplate: (town) =>
       `${brand} installs composite decking in ${town}, giving homes a durable, low-maintenance outdoor space that does not need annual staining or sanding. Boards, colours and edging are chosen to suit the property and how the space will be used.`,
-    localTemplate: (town, nearby) =>
-      `Gardens in ${town} vary from tight urban plots to larger suburban gardens, and composite decking suits most of them well because it copes with damp Scottish weather without warping or splitting. If you are searching for composite decking installers near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
+    localTemplate: (town, nearby, character) =>
+      `${characterLocalNote(character, "composite", town)} If you are searching for composite decking installers near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
     bodyTemplate: (town) =>
       `From full garden decks to smaller patio areas, ${brand} installs composite decking in ${town} with a proper subframe, drainage and edge trims for a neat, long-lasting finish. Old timber decking or slabs can be removed and disposed of where needed before the new composite deck goes down. Contact ${brand} for a free composite decking quote in ${town}.`,
     faqTemplates: (town) => [
@@ -92,8 +93,8 @@ export const categories: ServiceCategory[] = [
       `Timber decking installers in ${displayName} by ${brand}. Softwood, hardwood and raised timber decking with free quotes across ${region}.`,
     introTemplate: (town) =>
       `${brand} installs timber decking in ${town}, from simple ground-level decks to raised structures for sloped gardens. Timber type and finish are chosen to suit the budget and how the deck will be used.`,
-    localTemplate: (town, nearby) =>
-      `Gardens in ${town} often have changes in level or drainage that make a level deck useful, and timber remains a popular and cost-effective choice for larger areas. If you are searching for timber decking installers near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
+    localTemplate: (town, nearby, character) =>
+      `${characterLocalNote(character, "timber", town)} If you are searching for timber decking installers near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
     bodyTemplate: (town) =>
       `${brand} builds timber decking in ${town} with pressure-treated joists, a proper subframe and either softwood or hardwood boards depending on budget and appearance. Balustrades, steps and lighting can be added where needed. Contact ${brand} for a free timber decking quote in ${town}.`,
     faqTemplates: (town) => [
@@ -130,8 +131,8 @@ export const categories: ServiceCategory[] = [
       `Decking repairs in ${displayName} by ${brand}. Rotten board replacement, resurfacing and balustrade repairs with free quotes across ${region}.`,
     introTemplate: (town) =>
       `${brand} repairs decking in ${town}, from replacing individual rotten or damaged boards to resurfacing a full deck. Both timber and composite decking are covered.`,
-    localTemplate: (town, nearby) =>
-      `Decking in ${town} that has been left untreated over winter can develop soft or slippery boards and loose balustrades. If you are searching for decking repairs near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
+    localTemplate: (town, nearby, character) =>
+      `${characterLocalNote(character, "repairs", town)} If you are searching for decking repairs near ${town}, ${brand} covers ${town} and nearby areas including ${nearby.slice(0, 3).join(", ") || "surrounding towns"}.`,
     bodyTemplate: (town) =>
       `${brand} inspects decking in ${town} to identify rotten joists, failing boards and loose balustrade posts, then repairs or replaces only what is needed. Where a deck has gone beyond economical repair, ${brand} can also quote for a full replacement. Contact ${brand} for a free decking repair quote in ${town}.`,
     faqTemplates: (town) => [

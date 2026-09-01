@@ -121,9 +121,9 @@ const breadcrumbSchema = {
         </div>
       </section>
 
-      <ExperienceSection client:load />
-      <ServicesSection client:load />
-      <HomepageContentSection client:load />
+      <ExperienceSection client:load locationName={location.name} />
+      <ServicesSection client:load locationName={location.name} />
+      <HomepageContentSection client:load locationName={location.name} />
       <ProjectsSection client:load />
       <ServiceAreasSection client:load />
       <ReviewsSection client:load />

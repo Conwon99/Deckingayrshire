@@ -1,9 +1,13 @@
 import { brandName, business, citiesLabel } from "@/data/business";
 import { categories } from "@/data/categories";
 
-export const HomepageContentSection = () => {
+interface HomepageContentSectionProps {
+  locationName?: string;
+}
+
+export const HomepageContentSection = ({ locationName }: HomepageContentSectionProps) => {
   const brand = brandName();
-  const cities = citiesLabel();
+  const cities = locationName ?? citiesLabel();
 
   return (
     <section id="service-information" className="box-border caret-transparent pt-[70px] pb-0 md:pt-[120px] md:pb-0 bg-transparent">

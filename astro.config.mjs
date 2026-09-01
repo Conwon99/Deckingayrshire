@@ -4,7 +4,7 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.deckingayrshire.co.uk',
+  site: 'https://deckingayrshire.co.uk',
   integrations: [
     react(),
     tailwind({

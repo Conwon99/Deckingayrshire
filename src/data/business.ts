@@ -71,7 +71,7 @@ export const business: BusinessConfig = {
 
   // TODO: replace with a real inbox before launch.
   email: "hello@deckingayrshire.co.uk",
-  siteUrl: "https://www.deckingayrshire.co.uk",
+  siteUrl: "https://deckingayrshire.co.uk",
   // Pre-launch: no live Facebook page or Google Business Profile yet.
   facebookUrl: "",
   googleMapsUrl: "",

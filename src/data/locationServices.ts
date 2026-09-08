@@ -48,10 +48,10 @@ const buildLocationServicePage = (
     title: `${category.matrixTitleSuffix} in ${displayName} | ${brand}`,
     h1: `${category.matrixTitleSuffix} in ${displayName}`,
     metaDescription: truncateMeta(category.metaTemplate(displayName)),
-    intro: category.introTemplate(town),
+    intro: category.introTemplate(town, location.character, nearbyNames),
     localParagraph: category.localTemplate(town, nearbyNames, location.character),
-    bodyParagraph: category.bodyTemplate(town),
-    faqs: category.faqTemplates(town),
+    bodyParagraph: category.bodyTemplate(town, location.character),
+    faqs: category.faqTemplates(town, location.character, nearbyNames),
     location,
     category,
   };

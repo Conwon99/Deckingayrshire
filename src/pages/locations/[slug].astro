@@ -1,9 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Header } from "@/sections/Header";
-import { ExperienceSection } from "@/sections/ExperienceSection";
-import { ServicesSection } from "@/sections/ServicesSection";
-import { HomepageContentSection } from "@/sections/HomepageContentSection";
 import { ServiceAreasSection } from "@/sections/ServiceAreasSection";
 import { ProjectsSection } from "@/sections/ProjectsSection";
 import { ReviewsSection } from "@/sections/ReviewsSection";
@@ -12,9 +9,10 @@ import { CTASection } from "@/sections/Footer/components/CTASection";
 import { Footer } from "@/sections/Footer";
 import { locations, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
 import { categories } from "@/data/categories";
-import { getLocationServicePath, getMatrixSlug } from "@/data/locationServices";
+import { getLocationServicePath, getMatrixSlug, hasMatrixPages } from "@/data/locationServices";
+import { projects } from "@/data/projects";
 import { buildFaqSchema } from "@/data/faqs";
-import { absoluteUrl, brandName, business } from "@/data/business";
+import { absoluteUrl, business } from "@/data/business";
 
 export function getStaticPaths() {
   return locations.map((location) => ({
@@ -24,9 +22,17 @@ export function getStaticPaths() {
 }
 
 const { location } = Astro.props as { location: LocationPage };
-const brand = brandName();
 const siteRoot = absoluteUrl("/");
 const nearbyLinks = getNearbyLocationLinks(location);
+const serviceLinks = categories.map((category) => ({
+  label: hasMatrixPages(location.slug)
+    ? `${category.name} in ${location.name}`
+    : category.title,
+  href: hasMatrixPages(location.slug)
+    ? getLocationServicePath(location.slug, getMatrixSlug(category, location.slug))
+    : `/${category.slug}`,
+}));
+const localProject = projects.find((project) => project.location === location.name);
 const canonical = absoluteUrl(`/locations/${location.slug}`);
 const locationSchema = {
   "@context": "https://schema.org",
@@ -93,16 +99,29 @@ const breadcrumbSchema = {
         <div class="box-border caret-transparent max-w-[1200px] mx-auto px-[15px] md:px-[30px]">
           <div class="bg-white box-border caret-transparent rounded-[20px] p-6 md:p-10">
             <h2 class="text-gray-900 text-[28px] font-bold box-border caret-transparent leading-[36px] mb-5 md:text-[44px] md:leading-[54px]">
-              Decking Services in {location.name}
+              Decking in {location.name}
             </h2>
-            <p class="text-gray-700 box-border caret-transparent mb-6">
-              {location.description} Whether you need a new deck installed or an existing one repaired, {brand} can help with tidy workmanship and practical advice.
-            </p>
+            <p class="text-gray-700 box-border caret-transparent mb-6 leading-7">{location.localDetail}</p>
+
+            <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">What to plan for in {location.name}</h3>
+            <ul class="text-gray-700 list-disc pl-6 space-y-2 mb-8">
+              {location.considerations.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+
+            {localProject && (
+              <div class="rounded-xl border border-gray-200 p-5 mb-8">
+                <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-2">Recent project in {location.name}</h3>
+                <p class="text-gray-700 mb-3">{localProject.description}</p>
+                <a href={`/projects/${localProject.slug}`} class="text-[#ea580c] hover:underline font-medium">See the {localProject.title.toLowerCase()} project</a>
+              </div>
+            )}
 
             <h3 class="text-gray-900 text-xl font-bold box-border caret-transparent mb-3">Services in {location.name}</h3>
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 mb-8">
-              {categories.map((category) => (
-                <a href={getLocationServicePath(location.slug, getMatrixSlug(category, location.slug))} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
+              {serviceLinks.map((link) => (
+                <a href={link.href} class="text-[#ea580c] hover:underline font-medium">{link.label}</a>
               ))}
             </div>
 
@@ -121,9 +140,6 @@ const breadcrumbSchema = {
         </div>
       </section>
 
-      <ExperienceSection client:load locationName={location.name} />
-      <ServicesSection client:load locationName={location.name} />
-      <HomepageContentSection client:load locationName={location.name} />
       <ProjectsSection client:load />
       <ServiceAreasSection client:load />
       <ReviewsSection client:load />

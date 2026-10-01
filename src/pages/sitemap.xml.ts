@@ -5,7 +5,6 @@ import { services } from '@/data/services';
 import { locationPages } from '@/data/locations';
 
 import { categories } from '@/data/categories';
-import { locationServicePages } from '@/data/locationServices';
 import { projects } from '@/data/projects';
 import { TOTAL_REVIEW_COUNT } from '@/data/reviews';
 
@@ -64,16 +63,6 @@ const pages: SitemapPage[] = [
     path: `/locations/${location.slug}`,
 
     priority: '0.8',
-
-    changefreq: 'monthly' as const,
-
-  })),
-
-  ...locationServicePages.map((page) => ({
-
-    path: `/locations/${page.locationSlug}/${page.matrixSlug}`,
-
-    priority: '0.75',
 
     changefreq: 'monthly' as const,
 

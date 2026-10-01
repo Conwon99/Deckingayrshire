@@ -5,7 +5,6 @@ import { CTASection } from "@/sections/Footer/components/CTASection";
 import { Footer } from "@/sections/Footer";
 import { categories, getServicesForCategory, type ServiceCategory } from "@/data/categories";
 import { locations, hasLocationPage } from "@/data/locations";
-import { getLocationServicePath, getMatrixSlug } from "@/data/locationServices";
 import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
 
 export function getStaticPaths() {
@@ -103,7 +102,7 @@ const breadcrumbSchema = {
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 mb-10">
             {locations.map((location) =>
               hasLocationPage(location.slug) ? (
-                <a href={getLocationServicePath(location.slug, getMatrixSlug(category, location.slug))} class="text-[#ea580c] hover:underline font-medium">{category.name} in {location.name}</a>
+                <a href={`/locations/${location.slug}`} class="text-[#ea580c] hover:underline font-medium">{location.name}</a>
               ) : (
                 <span class="text-slate-300">{location.name}</span>
               )

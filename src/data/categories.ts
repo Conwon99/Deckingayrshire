@@ -19,7 +19,7 @@ export type ServiceCategory = {
   image: string;
   imageAlt: string;
   serviceSlugs: string[];
-  /** Matrix page SEO fields — used by locationServices.ts */
+  /** Town-specific service page fields — currently unused (those pages were removed) */
   matrixTitleSuffix: string;
   serviceNameLower: string;
   contractorPhrase: string;

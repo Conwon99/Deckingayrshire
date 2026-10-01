@@ -413,9 +413,17 @@ export const locations: LocationPage[] = locationSeeds.map(({ slug, name, charac
   };
 });
 
+/** Only these towns get their own location page; every other town stays in `locations`
+ * so it can still be listed as plain text across the site. */
+const LOCATION_PAGE_SLUGS = ["ayr", "kilmarnock"];
+
+export const hasLocationPage = (slug: string) => LOCATION_PAGE_SLUGS.includes(slug);
+
+export const locationPages: LocationPage[] = locations.filter((location) => hasLocationPage(location.slug));
+
 export const getNearbyLocationLinks = (location: LocationPage) =>
   location.nearby
-    .map((name) => locations.find((item) => item.name === name))
+    .map((name) => locationPages.find((item) => item.name === name))
     .filter((item): item is LocationPage => Boolean(item));
 
 export const getLocationBySlug = (slug: string) =>

@@ -3,7 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Header } from "@/sections/Header";
 import { CTASection } from "@/sections/Footer/components/CTASection";
 import { Footer } from "@/sections/Footer";
-import { locations } from "@/data/locations";
+import { locations, hasLocationPage } from "@/data/locations";
 
 import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
 import { categories } from "@/data/categories";
@@ -56,12 +56,19 @@ const breadcrumbSchema = {
       <section class="box-border caret-transparent pb-[80px] md:pb-[120px]">
         <div class="box-border caret-transparent max-w-[1204px] mx-auto px-5 md:px-8">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {locations.map((location) => (
-              <a href={`/locations/${location.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-5 hover:border-[#ea580c] transition-colors block">
-                <h2 class="text-white text-lg font-bold mb-2">{location.name}</h2>
-                <p class="text-slate-300 text-sm">{location.description}</p>
-              </a>
-            ))}
+            {locations.map((location) =>
+              hasLocationPage(location.slug) ? (
+                <a href={`/locations/${location.slug}`} class="rounded-xl bg-neutral-900/75 border border-white/10 p-5 hover:border-[#ea580c] transition-colors block">
+                  <h2 class="text-white text-lg font-bold mb-2">{location.name}</h2>
+                  <p class="text-slate-300 text-sm">{location.description}</p>
+                </a>
+              ) : (
+                <div class="rounded-xl bg-neutral-900/75 border border-white/10 p-5">
+                  <h2 class="text-white text-lg font-bold mb-2">{location.name}</h2>
+                  <p class="text-slate-300 text-sm">{location.description}</p>
+                </div>
+              )
+            )}
           </div>
         </div>
       </section>

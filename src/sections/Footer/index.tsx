@@ -1,17 +1,9 @@
 import { PhoneLink } from "@/components/PhoneLink";
 import { brandName, business, citiesLabel } from "@/data/business";
 import { categories } from "@/data/categories";
-import { locations } from "@/data/locations";
+import { locations, hasLocationPage } from "@/data/locations";
 import { services } from "@/data/services";
 import { TOTAL_REVIEW_COUNT } from "@/data/reviews";
-import { getMatrixSlug } from "@/data/locationServices";
-
-const topMatrixLinks = locations.slice(0, 2).flatMap((location) =>
-  categories.slice(0, 2).map((category) => ({
-    label: `${category.name} in ${location.shortName ?? location.name}`,
-    href: `/locations/${location.slug}/${getMatrixSlug(category, location.slug)}`,
-  })),
-);
 
 export const Footer = () => {
   const brand = brandName();
@@ -83,11 +75,6 @@ export const Footer = () => {
                     {category.name}
                   </a>
                 ))}
-                {topMatrixLinks.map((link) => (
-                  <a key={link.href} href={link.href} className="text-white/60 text-xs box-border caret-transparent hover:text-[#ea580c] pl-3 transition-colors duration-300">
-                    {link.label}
-                  </a>
-                ))}
                 {services.filter((s) => s.slug !== "free-quotes").map((service) => (
                   <a key={service.slug} href={`/services/${service.slug}`} className="text-white/80 text-sm box-border caret-transparent hover:text-[#ea580c] hover:decoration-transparent transition-colors duration-300">
                     {service.shortTitle}
@@ -103,11 +90,17 @@ export const Footer = () => {
                 <a href="/locations" className="text-white/80 text-sm box-border caret-transparent hover:text-[#ea580c] hover:decoration-transparent transition-colors duration-300 font-medium">
                   All Locations
                 </a>
-                {locations.map((location) => (
-                  <a key={location.slug} href={`/locations/${location.slug}`} className="text-white/80 text-sm box-border caret-transparent hover:text-[#ea580c] hover:decoration-transparent transition-colors duration-300">
-                    {location.name}
-                  </a>
-                ))}
+                {locations.map((location) =>
+                  hasLocationPage(location.slug) ? (
+                    <a key={location.slug} href={`/locations/${location.slug}`} className="text-white/80 text-sm box-border caret-transparent hover:text-[#ea580c] hover:decoration-transparent transition-colors duration-300">
+                      {location.name}
+                    </a>
+                  ) : (
+                    <span key={location.slug} className="text-white/80 text-sm box-border caret-transparent">
+                      {location.name}
+                    </span>
+                  ),
+                )}
               </div>
             </details>
           </div>

@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 import { services } from '@/data/services';
 
-import { locations } from '@/data/locations';
+import { locationPages } from '@/data/locations';
 
 import { categories } from '@/data/categories';
 import { locationServicePages } from '@/data/locationServices';
@@ -59,7 +59,7 @@ const pages: SitemapPage[] = [
 
   })),
 
-  ...locations.map((location) => ({
+  ...locationPages.map((location) => ({
 
     path: `/locations/${location.slug}`,
 

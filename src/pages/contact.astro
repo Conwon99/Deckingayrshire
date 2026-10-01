@@ -4,7 +4,7 @@ import { Header } from "@/sections/Header";
 import { HeroSection } from "@/pages/contact/sections/HeroSection";
 import { FAQSection } from "@/pages/contact/sections/FAQSection";
 import { Footer } from "@/sections/Footer";
-import { locations } from "@/data/locations";
+import { locations, hasLocationPage } from "@/data/locations";
 import { homepageFaqs, buildFaqSchema } from "@/data/faqs";
 import { absoluteUrl, brandName, business, citiesLabel } from "@/data/business";
 import { categories } from "@/data/categories";
@@ -49,9 +49,13 @@ const faqSchema = buildFaqSchema(homepageFaqs);
             <h2 class="text-white text-2xl font-bold mb-4 md:text-3xl">Areas We Serve</h2>
             <p class="text-slate-200 mb-6">{brand} covers {citiesLabel()} and towns across {business.region}. Not sure if we serve your area? Send a message using the form above and we will let you know.</p>
             <div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 mb-4">
-              {locations.map((location) => (
-                <a href={`/locations/${location.slug}`} class="text-slate-200 text-sm hover:text-[#ea580c] hover:underline">{location.name}</a>
-              ))}
+              {locations.map((location) =>
+                hasLocationPage(location.slug) ? (
+                  <a href={`/locations/${location.slug}`} class="text-slate-200 text-sm hover:text-[#ea580c] hover:underline">{location.name}</a>
+                ) : (
+                  <span class="text-slate-200 text-sm">{location.name}</span>
+                )
+              )}
             </div>
             <a href="/locations" class="text-[#ea580c] hover:underline font-medium text-sm">View all service areas →</a>
           </div>

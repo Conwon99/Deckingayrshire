@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ServiceAreaMap } from "@/sections/ServiceAreasSection/ServiceAreaMap";
 import { brandName, business, citiesLabel } from "@/data/business";
 import { categories } from "@/data/categories";
-import { locations } from "@/data/locations";
+import { locations, hasLocationPage } from "@/data/locations";
 
 export const ServiceAreasSection = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,9 +52,13 @@ export const ServiceAreasSection = () => {
                       <span className="text-neutral-800" aria-hidden>
                         •
                       </span>
-                      <a href={`/locations/${location.slug}`} className="text-neutral-700 hover:text-[#ea580c] hover:underline">
-                        {location.name}
-                      </a>
+                      {hasLocationPage(location.slug) ? (
+                        <a href={`/locations/${location.slug}`} className="text-neutral-700 hover:text-[#ea580c] hover:underline">
+                          {location.name}
+                        </a>
+                      ) : (
+                        <span className="text-neutral-700">{location.name}</span>
+                      )}
                     </li>
                   ))}
                   <li className="flex items-center gap-2">

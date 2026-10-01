@@ -3,7 +3,7 @@ import { trackQuoteButton } from "@/utils/analytics";
 import { brandName } from "@/data/business";
 import { services } from "@/data/services";
 import { categories } from "@/data/categories";
-import { locations } from "@/data/locations";
+import { locationPages } from "@/data/locations";
 import { TOTAL_REVIEW_COUNT } from "@/data/reviews";
 import { PHONE_DISPLAY_ENABLED } from "@/utils/phoneTracking";
 
@@ -130,7 +130,7 @@ export const DesktopNav = ({ isMobileMenuOpen = false, onCloseMobileMenu }: Desk
                 All Locations
               </a>
             </li>
-            {locations.map((location) => (
+            {locationPages.map((location) => (
               <li key={location.slug} className="box-border caret-transparent w-full">
                 <a
                   href={`/locations/${location.slug}`}

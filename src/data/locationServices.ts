@@ -4,7 +4,7 @@ import {
   type ServiceCategory,
 } from "@/data/categories";
 import { brandName, truncateMeta } from "@/data/business";
-import { locations, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
+import { locationPages, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
 
 export type LocationServiceFaq = {
   question: string;
@@ -57,7 +57,7 @@ const buildLocationServicePage = (
   };
 };
 
-export const locationServicePages: LocationServicePage[] = locations.flatMap((location) =>
+export const locationServicePages: LocationServicePage[] = locationPages.flatMap((location) =>
   categories.map((category) => buildLocationServicePage(location, category)),
 );
 

@@ -10,14 +10,14 @@ import { ReviewsSection } from "@/sections/ReviewsSection";
 import { LocationFAQSection } from "@/sections/LocationFAQSection";
 import { CTASection } from "@/sections/Footer/components/CTASection";
 import { Footer } from "@/sections/Footer";
-import { locations, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
+import { locationPages, getNearbyLocationLinks, type LocationPage } from "@/data/locations";
 import { categories } from "@/data/categories";
 import { getLocationServicePath, getMatrixSlug } from "@/data/locationServices";
 import { buildFaqSchema } from "@/data/faqs";
 import { absoluteUrl, brandName, business } from "@/data/business";
 
 export function getStaticPaths() {
-  return locations.map((location) => ({
+  return locationPages.map((location) => ({
     params: { slug: location.slug },
     props: { location },
   }));
